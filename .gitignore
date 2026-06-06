@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Testing
+/coverage
+/.next
+
+# Production
+/build
+/.next/
+/out/
+
+# Misc
+.DS_Store
+*.pem
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Debug
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Database
+prisma/dev.db
+prisma/dev.db-journal
+
+# Vercel
+.vercel
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Deployment
+.next/
+out/
+dist/
+
+# Secret files
+secrets/
+.env.*.local
+auth-keys/
+
+# Build artifacts
+*.tsbuildinfo

@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.6%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.6%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 9.0%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.6%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.6%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.6%;
+    --popover-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 98%;
+    --accent-foreground: 0 0% 9.0%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.3%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom utilities */
+@layer components {
+  .sos-button {
+    @apply fixed bottom-6 right-6 z-50 rounded-full w-16 h-16 bg-red-600 hover:bg-red-700 text-white shadow-lg flex items-center justify-center font-bold text-sm;
+  }
+
+  .sector-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100;
+  }
+
+  .crowd-low {
+    @apply bg-green-100 text-green-900 dark:bg-green-900 dark:text-green-100;
+  }
+
+  .crowd-medium {
+    @apply bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100;
+  }
+
+  .crowd-high {
+    @apply bg-orange-100 text-orange-900 dark:bg-orange-900 dark:text-orange-100;
+  }
+
+  .crowd-critical {
+    @apply bg-red-100 text-red-900 dark:bg-red-900 dark:text-red-100;
+  }
+}
+
+/* Loading states */
+.loading {
+  @apply opacity-50 pointer-events-none;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    @apply !transition-none !animate-none;
+  }
+}
