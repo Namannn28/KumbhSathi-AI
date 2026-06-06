@@ -136,6 +136,6 @@ MIT License — see [LICENSE](./LICENSE)
 
 ---
 
-Built with ❤️ for Mahakumbh 2025. **Har Kadam Mein Saath.**
+Built with ❤️ for Mahakumbh 2028. **Har Kadam Mein Saath.**
 
-🟢 Production Ready | v1.0.0 | Updated Jan 2025
+🟢 Production Ready | v1.0.0 | Updated Jan 2026
