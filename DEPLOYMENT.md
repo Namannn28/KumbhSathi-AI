@@ -33,6 +33,7 @@ DATABASE_URL=postgresql://...
 # NextAuth
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=<generate-with: openssl rand -base64 32>
+ALLOWED_ORIGINS=https://your-production-domain.com
 
 # Google OAuth (from Google Cloud Console)
 GOOGLE_CLIENT_ID=your-google-client-id
@@ -86,6 +87,7 @@ In Vercel Project Settings → Environment Variables, add:
 - `DATABASE_URL` — Vercel Postgres connection string
 - `NEXTAUTH_URL` — `https://your-domain.vercel.app`
 - `NEXTAUTH_SECRET` — Generate: `openssl rand -base64 32`
+- `ALLOWED_ORIGINS` — Comma-separated HTTPS origins allowed to call API routes
 - `GEMINI_API_KEY` — Your API key
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — OAuth credentials
 

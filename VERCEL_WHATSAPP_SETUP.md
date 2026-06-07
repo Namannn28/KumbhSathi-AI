@@ -68,7 +68,8 @@ NODE_ENV = production
 ```
 WHATSAPP_BUSINESS_TOKEN = [from Meta/Twilio]
 WHATSAPP_BUSINESS_PHONE_ID = [from Meta Business Manager]
-WHATSAPP_VERIFY_TOKEN = kumbhsaarthi-webhook-verify
+WHATSAPP_VERIFY_TOKEN = [generate: openssl rand -hex 32]
+WHATSAPP_APP_SECRET = [from Meta app dashboard]
 SENTRY_DSN = [from Sentry]
 ```
 
@@ -181,7 +182,8 @@ Verify Token: kumbhsaarthi-webhook-verify
 ```
 WHATSAPP_BUSINESS_TOKEN = your_access_token
 WHATSAPP_BUSINESS_PHONE_ID = your_phone_id
-WHATSAPP_VERIFY_TOKEN = kumbhsaarthi-webhook-verify
+WHATSAPP_VERIFY_TOKEN = [same random value configured in Meta]
+WHATSAPP_APP_SECRET = [from Meta app dashboard]
 ```
 
 #### 7. Subscribe to Messages Webhook
