@@ -3,6 +3,53 @@ import { success, error } from "@/lib/utils";
 import prisma from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth.config";
+import { z } from "zod";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import {
+  httpsUrlSchema,
+  limitedTextSchema,
+  optionalLimitedTextSchema,
+  optionalSectorSchema,
+  parseJsonBody,
+  validationErrorResponse,
+} from "@/lib/validation";
+
+const optionalAgeSchema = z.preprocess(
+  (value) => (value === null || value === "" ? undefined : value),
+  z.coerce.number().int().min(0).max(120).optional()
+);
+
+const lastSeenTimeSchema = z
+  .string()
+  .trim()
+  .datetime()
+  .refine((value) => new Date(value).getTime() <= Date.now() + 5 * 60 * 1000, {
+    message: "Last seen time cannot be in the future",
+  });
+
+const lostReportBodySchema = z.object({
+  missingName: limitedTextSchema(100),
+  age: optionalAgeSchema,
+  gender: optionalLimitedTextSchema(32),
+  clothing: optionalLimitedTextSchema(500),
+  sector: optionalSectorSchema,
+  lastSeenTime: z.preprocess(
+    (value) => (value === null || value === "" ? undefined : value),
+    lastSeenTimeSchema.optional()
+  ),
+  photoUrl: z.preprocess(
+    (value) => (value === null || value === "" ? undefined : value),
+    httpsUrlSchema.optional()
+  ),
+});
+
+const lostListQuerySchema = z.object({
+  caseId: z.preprocess(
+    (value) => value || undefined,
+    z.string().trim().min(1).max(128).optional()
+  ),
+  sector: optionalSectorSchema,
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,7 +61,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
+    const user = session.user as any;
+
+    const rateLimitCheck = await checkRateLimit(
+      `lost-report:${user.id}`,
+      RATE_LIMITS.LOST_PERSON_REPORT.max,
+      RATE_LIMITS.LOST_PERSON_REPORT.window
+    );
+
+    if (!rateLimitCheck.success) {
+      return NextResponse.json(
+        error("RATE_LIMITED", "Too many lost-person reports"),
+        { status: 429 }
+      );
+    }
+
+    const parsedBody = await parseJsonBody(req, lostReportBodySchema);
+    if (parsedBody.response) return parsedBody.response;
+
     const {
       missingName,
       age,
@@ -23,9 +87,7 @@ export async function POST(req: NextRequest) {
       sector,
       lastSeenTime,
       photoUrl,
-    } = body;
-
-    const user = session.user as any;
+    } = parsedBody.data;
 
     const lostPerson = await prisma.lostPerson.create({
       data: {
@@ -62,8 +124,9 @@ export async function POST(req: NextRequest) {
       )
     );
   } catch (err: any) {
+    console.error("[ERROR] Lost person POST:", err);
     return NextResponse.json(
-      error("ERROR", err.message || "Failed to report missing person"),
+      error("ERROR", "Failed to report missing person"),
       { status: 500 }
     );
   }
@@ -81,8 +144,17 @@ export async function GET(req: NextRequest) {
 
     const user = session.user as any;
     const { searchParams } = new URL(req.url);
-    const caseId = searchParams.get("caseId");
-    const sector = searchParams.get("sector");
+    const parsedQuery = lostListQuerySchema.safeParse(
+      Object.fromEntries(searchParams)
+    );
+
+    if (!parsedQuery.success) {
+      return validationErrorResponse(
+        parsedQuery.error.issues[0]?.message || "Invalid lost-person query"
+      );
+    }
+
+    const { caseId, sector } = parsedQuery.data;
 
     // Only show own reports or if user is VOLUNTEER/POLICE
     let where: any = { status: "SEARCHING" };

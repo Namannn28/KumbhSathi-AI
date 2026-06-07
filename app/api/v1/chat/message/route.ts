@@ -4,8 +4,27 @@ import prisma from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth.config";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { z } from "zod";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import {
+  languageSchema,
+  limitedTextSchema,
+  parseJsonBody,
+  sessionIdSchema,
+  validationErrorResponse,
+} from "@/lib/validation";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+
+const chatBodySchema = z.object({
+  message: limitedTextSchema(1000),
+  sessionId: sessionIdSchema.default("default"),
+  language: languageSchema.default("en"),
+});
+
+const chatQuerySchema = z.object({
+  sessionId: z.preprocess((value) => value || "default", sessionIdSchema),
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,24 +36,38 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const { message, sessionId, language = "en" } = body;
+    const user = session.user as any;
+    const userId = user.id;
+    const rateLimitCheck = await checkRateLimit(
+      `chat:${userId}`,
+      RATE_LIMITS.CHAT.max,
+      RATE_LIMITS.CHAT.window
+    );
 
-    if (!message) {
+    if (!rateLimitCheck.success) {
       return NextResponse.json(
-        error("MISSING_FIELD", "Message is required"),
-        { status: 400 }
+        error("RATE_LIMITED", "Too many chat messages"),
+        { status: 429 }
       );
     }
 
-    const user = session.user as any;
-    const userId = user.id;
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json(
+        error("AI_UNAVAILABLE", "AI service is not configured"),
+        { status: 503 }
+      );
+    }
+
+    const parsedBody = await parseJsonBody(req, chatBodySchema);
+    if (parsedBody.response) return parsedBody.response;
+
+    const { message, sessionId, language } = parsedBody.data;
 
     // Get conversation history
     const history = await prisma.chatMessage.findMany({
       where: {
         userId,
-        sessionId: sessionId || "default",
+        sessionId,
       },
       orderBy: { createdAt: "asc" },
       take: 10,
@@ -68,7 +101,7 @@ Available FAQ context: ${JSON.stringify(faqDocs.map((d) => d.answer))}`;
 
     // Sanitize message to prevent prompt injection
     const sanitizedMessage = message
-      .replace(/\\[\\\\`]/g, "\\$&")
+      .replace(/[`\\]/g, "\\$&")
       .slice(0, 1000); // Limit length
 
     // Detect injection attempts
@@ -99,7 +132,7 @@ Available FAQ context: ${JSON.stringify(faqDocs.map((d) => d.answer))}`;
     await prisma.chatMessage.create({
       data: {
         userId,
-        sessionId: sessionId || "default",
+        sessionId,
         role: "USER",
         content: message,
         inputType: "text",
@@ -109,7 +142,7 @@ Available FAQ context: ${JSON.stringify(faqDocs.map((d) => d.answer))}`;
     await prisma.chatMessage.create({
       data: {
         userId,
-        sessionId: sessionId || "default",
+        sessionId,
         role: "ASSISTANT",
         content: responseText,
         agentUsed: "GEMINI_CHAT",
@@ -150,7 +183,15 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const sessionId = searchParams.get("sessionId") || "default";
+    const parsedQuery = chatQuerySchema.safeParse(Object.fromEntries(searchParams));
+
+    if (!parsedQuery.success) {
+      return validationErrorResponse(
+        parsedQuery.error.issues[0]?.message || "Invalid chat query"
+      );
+    }
+
+    const { sessionId } = parsedQuery.data;
     const user = session.user as any;
 
     const messages = await prisma.chatMessage.findMany({

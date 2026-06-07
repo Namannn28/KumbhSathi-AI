@@ -1,9 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
-import { success, error, generateCaseId } from "@/lib/utils";
+import { success, error } from "@/lib/utils";
 import prisma from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth.config";
 import { EmergencySeverity, EmergencyType } from "@prisma/client";
+import { z } from "zod";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import {
+  emergencyTypeSchema,
+  latitudeSchema,
+  longitudeSchema,
+  optionalLimitedTextSchema,
+  optionalSectorSchema,
+  parseJsonBody,
+} from "@/lib/validation";
+
+const optionalLatitudeSchema = z.preprocess(
+  (value) => (value === null || value === "" ? undefined : value),
+  latitudeSchema.optional()
+);
+const optionalLongitudeSchema = z.preprocess(
+  (value) => (value === null || value === "" ? undefined : value),
+  longitudeSchema.optional()
+);
+
+const sosBodySchema = z
+  .object({
+    type: emergencyTypeSchema,
+    description: optionalLimitedTextSchema(500),
+    latitude: optionalLatitudeSchema,
+    longitude: optionalLongitudeSchema,
+    sector: optionalSectorSchema,
+  })
+  .refine(
+    (body) =>
+      (body.latitude === undefined && body.longitude === undefined) ||
+      (body.latitude !== undefined && body.longitude !== undefined),
+    "Latitude and longitude must be provided together"
+  );
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,26 +49,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const { type, description, latitude, longitude, sector } = body;
     const user = session.user as any;
 
-    // Validate emergency type
-    const validTypes = [
-      "MEDICAL",
-      "LOST_CHILD",
-      "WOMEN_SAFETY",
-      "STAMPEDE",
-      "FIRE",
-      "CROWD_SURGE",
-      "OTHER",
-    ];
-    if (!validTypes.includes(type)) {
+    const rateLimitCheck = await checkRateLimit(
+      `sos:${user.id}`,
+      RATE_LIMITS.EMERGENCY_SOS.max,
+      RATE_LIMITS.EMERGENCY_SOS.window
+    );
+
+    if (!rateLimitCheck.success) {
       return NextResponse.json(
-        error("INVALID_TYPE", "Invalid emergency type"),
-        { status: 400 }
+        error("RATE_LIMITED", "Too many SOS requests"),
+        { status: 429 }
       );
     }
+
+    const parsedBody = await parseJsonBody(req, sosBodySchema);
+    if (parsedBody.response) return parsedBody.response;
+
+    const { type, description, latitude, longitude, sector } = parsedBody.data;
 
     // Determine severity based on type
     const severityMap: Record<string, EmergencySeverity> = {
@@ -110,7 +143,7 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     console.error("SOS error:", err);
     return NextResponse.json(
-      error("SOS_ERROR", err.message || "Failed to register emergency"),
+      error("SOS_ERROR", "Failed to register emergency"),
       { status: 500 }
     );
   }
