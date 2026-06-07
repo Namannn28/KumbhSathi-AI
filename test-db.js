@@ -1,19 +1,32 @@
 const { PrismaClient } = require('@prisma/client');
 
-async function testConn() {
-  process.env.DATABASE_URL = 'postgresql://postgres.tstkjavbwzmiivjjyiln:Naman_2005%40%40%40@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1';
-  console.log("Connecting using Prisma with DATABASE_URL:", process.env.DATABASE_URL.replace(/Naman_2005.*/, 'XXX'));
+async function checkRegion(region) {
+  const host = `aws-0-${region}.pooler.supabase.com`;
+  const url = `postgresql://postgres.tstkjavbwzmiivjjyiln:Naman_2005%40%40%40@${host}:6543/postgres?pgbouncer=true&connection_limit=1`;
+  console.log(`Checking region ${region} with url:`, url.replace(/Naman_2005.*/, 'XXX'));
   
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: url
+      }
+    }
+  });
   
   try {
     const count = await prisma.user.count();
-    console.log("Successfully connected! Total users in database:", count);
+    console.log(`🎉 SUCCESS! Connected to ${region}. Total users:`, count);
   } catch (err) {
-    console.error("Prisma connection failed:", err.message);
+    console.log(`Error for ${region}:`);
+    console.log(err.message || err);
   } finally {
     await prisma.$disconnect();
   }
 }
 
-testConn();
+async function run() {
+  await checkRegion('us-east-1');
+  await checkRegion('us-east-2');
+}
+
+run();
