@@ -1,11 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
 
 export default function MapComponent({ filteredLocations }: { filteredLocations: any[] }) {
+  const [mapId, setMapId] = useState<string>("");
+
   useEffect(() => {
+    // Generate a unique ID to prevent React Strict Mode "Map container is already initialized" error
+    setMapId(`map-${Date.now()}`);
+    
     // Fix for Leaflet marker icons in Next.js
     if (typeof window !== 'undefined') {
       const L = require('leaflet');
@@ -18,8 +23,11 @@ export default function MapComponent({ filteredLocations }: { filteredLocations:
     }
   }, []);
 
+  if (!mapId) return null;
+
   return (
     <MapContainer 
+      key={mapId}
       center={[25.4270, 81.8847]} 
       zoom={14} 
       className="w-full h-full z-10"
