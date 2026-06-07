@@ -107,8 +107,9 @@ export async function GET(req: NextRequest) {
       )
     );
   } catch (err: any) {
+    console.error("[ERROR] Route GET:", err);
     return NextResponse.json(
-      error("ERROR", err.message || "Failed to calculate route"),
+      error("ERROR", "Failed to calculate route"),
       { status: 500 }
     );
   }

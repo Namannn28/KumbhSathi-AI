@@ -40,7 +40,7 @@ export const authConfig: NextAuthOptions = {
             throw new Error("Invalid OTP");
           }
         } else {
-          throw new Error("OTP authentication is not configured");
+          throw new Error("Invalid OTP");
         }
 
         let user = await prisma.user.findUnique({
@@ -91,6 +91,8 @@ export const authConfig: NextAuthOptions = {
   },
   events: {
     async signIn({ user }) {
+      if (!user.id) return;
+
       await prisma.user.update({
         where: { id: user.id },
         data: { lastActive: new Date() },
