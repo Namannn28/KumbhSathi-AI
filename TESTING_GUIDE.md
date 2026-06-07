@@ -239,7 +239,7 @@ curl -X GET "http://localhost:3000/api/v1/nav/route?fromLat=25.434&fromLng=81.84
 
 ```bash
 # Webhook verification
-curl -X GET "http://localhost:3000/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=kumbhsaarthi-webhook-verify&hub.challenge=test123"
+curl -X GET "http://localhost:3000/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=<random-token>&hub.challenge=test123"
 
 # Response should be: test123
 
@@ -305,7 +305,7 @@ SELECT * FROM locations WHERE latitude > 25.4 AND latitude < 25.45;
    - Configure webhook:
      ```
      URL: https://your-vercel-app.vercel.app/api/v1/whatsapp/webhook
-     Token: kumbhsaarthi-webhook-verify
+     Token: <random-token>
      ```
 
 2. **Send Test Messages**:
@@ -349,7 +349,7 @@ curl -X POST https://kumbhsaarthi-ai.vercel.app/api/v1/chat/message \
   -d '{"message": "hello"}'
 
 # WhatsApp webhook verification
-curl -X GET "https://kumbhsaarthi-ai.vercel.app/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=kumbhsaarthi-webhook-verify&hub.challenge=test123"
+curl -X GET "https://kumbhsaarthi-ai.vercel.app/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=<random-token>&hub.challenge=test123"
 ```
 
 ### 3. Monitor Vercel

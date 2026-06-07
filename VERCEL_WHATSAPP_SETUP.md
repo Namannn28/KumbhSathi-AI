@@ -174,7 +174,7 @@ Scopes needed:
 WhatsApp Settings → Webhook URL
 
 Webhook URL: https://kumbhsaarthi-ai.vercel.app/api/v1/whatsapp/webhook
-Verify Token: kumbhsaarthi-webhook-verify
+Verify Token: [same random value as WHATSAPP_VERIFY_TOKEN]
 ```
 
 #### 6. Add Environment Variables to Vercel
@@ -256,7 +256,7 @@ curl -X POST http://localhost:3000/api/v1/emergency/sos \
 
 ```bash
 # Test webhook verification
-curl -X GET "http://localhost:3000/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=kumbhsaarthi-webhook-verify&hub.challenge=test123"
+curl -X GET "http://localhost:3000/api/v1/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=<random-token>&hub.challenge=test123"
 
 # Test incoming message
 curl -X POST http://localhost:3000/api/v1/whatsapp/webhook \
@@ -348,7 +348,7 @@ postgresql://USER:PASSWORD@HOST:5432/DATABASE
 ```bash
 # Check verify token matches:
 WHATSAPP_VERIFY_TOKEN in Vercel env
-kumbhsaarthi-webhook-verify in webhook config
+The same random value in `WHATSAPP_VERIFY_TOKEN` and your webhook config
 ```
 
 ### "Gemini API Rate Limited"
