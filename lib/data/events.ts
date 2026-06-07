@@ -87,3 +87,9 @@ export const events: KumbhEvent[] = [
 
 export const snanDates = events.filter(e => e.type === "snan");
 export const majorEvents = events.filter(e => e.isMajor);
+
+export const dailyActivities = [
+  { name: "Morning Aarti", description: "First prayer of the day", time: "05:00 AM", location: "Sangam" },
+  { name: "Langar Service", description: "Free food distribution", time: "12:00 PM", location: "Sector A1" },
+  { name: "Evening Aarti", description: "Grand prayer ceremony", time: "06:00 PM", location: "Sangam" },
+];

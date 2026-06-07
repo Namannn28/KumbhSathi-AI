@@ -61,3 +61,10 @@ export const weatherData = {
     { day: "Day 5", high: 23, low: 14, icon: "⛅", condition: "Cloudy" },
   ],
 };
+
+export const faqData = [
+  { q: "What should I bring?", a: "Warm clothes, ID proof, basic medicines, and a water bottle." },
+  { q: "Are cameras allowed?", a: "Yes, but be respectful of privacy, especially during bathing." },
+  { q: "Is the water safe?", a: "The water is considered holy. Drinking is a personal choice, but bottled water is advised." },
+  { q: "How to find lost items?", a: "Report to the nearest police post or use our Lost & Found app feature." },
+];

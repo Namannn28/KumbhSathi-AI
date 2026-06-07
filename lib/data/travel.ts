@@ -105,7 +105,16 @@ export const popularTrains: TrainResult[] = [
 ];
 
 export const majorCities = [
-  "New Delhi", "Mumbai", "Kolkata", "Chennai", "Bengaluru", "Hyderabad",
-  "Lucknow", "Varanasi", "Patna", "Jaipur", "Ahmedabad", "Pune",
-  "Chandigarh", "Bhopal", "Indore", "Nagpur", "Ranchi", "Bhubaneswar",
+  { code: "NDLS", name: "New Delhi" },
+  { code: "BOM", name: "Mumbai" },
+  { code: "CCU", name: "Kolkata" },
+  { code: "MAA", name: "Chennai" },
+  { code: "BLR", name: "Bengaluru" },
+  { code: "HYD", name: "Hyderabad" },
+  { code: "LKO", name: "Lucknow" },
+  { code: "BSB", name: "Varanasi" },
+  { code: "PNBE", name: "Patna" },
+  { code: "JP", name: "Jaipur" },
+  { code: "AMD", name: "Ahmedabad" },
+  { code: "PUNE", name: "Pune" },
 ];
