@@ -1,11 +1,10 @@
-import type { NextAuthConfig } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/db";
-import jwt from "jsonwebtoken";
 
-export const authConfig: NextAuthConfig = {
+export const authConfig: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -36,28 +35,22 @@ export const authConfig: NextAuthConfig = {
           throw new Error("Invalid OTP format");
         }
 
-        // CRITICAL: In production, verify OTP against Redis/database with TTL
-        // This is a DEMO-only hardcoded OTP for testing
-        // REMOVE THIS IN PRODUCTION AND IMPLEMENT REAL OTP VERIFICATION
-        if (process.env.NODE_ENV !== "development" || otp !== "123456") {
-          // In production, check against stored OTP in Redis:
-          // const storedOtp = await redis.get(`otp:${phone}`);
-          // if (!storedOtp || storedOtp !== otp) throw new Error("Invalid OTP");
-          // await redis.del(`otp:${phone}`); // Delete after use
-
-          if (process.env.NODE_ENV === "production") {
+        if (process.env.NODE_ENV === "development") {
+          if (otp !== "123456") {
             throw new Error("Invalid OTP");
           }
+        } else {
+          throw new Error("OTP authentication is not configured");
         }
 
         let user = await prisma.user.findUnique({
-          where: { phone: credentials.phone as string },
+          where: { phone },
         });
 
         if (!user) {
           user = await prisma.user.create({
             data: {
-              phone: credentials.phone as string,
+              phone,
               name: "Pilgrim",
               role: "PILGRIM",
             },
@@ -79,7 +72,7 @@ export const authConfig: NextAuthConfig = {
     error: "/auth/error",
   },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role || "PILGRIM";
@@ -108,4 +101,5 @@ export const authConfig: NextAuthConfig = {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
