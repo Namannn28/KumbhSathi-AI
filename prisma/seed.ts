@@ -83,7 +83,7 @@ async function main() {
   });
 
   // Toilet Facilities
-  const toilet1 = await prisma.location.create({
+  await prisma.location.create({
     data: {
       name: "Public Toilet Block A",
       nameHi: "सार्वजनिक शौचालय ब्लॉक ए",
@@ -99,7 +99,7 @@ async function main() {
   });
 
   // Water Stations
-  const waterStation1 = await prisma.location.create({
+  await prisma.location.create({
     data: {
       name: "Water Station - Sector 1A",
       nameHi: "जल स्टेशन - सेक्टर 1ए",
@@ -157,7 +157,7 @@ async function main() {
   });
 
   // Create Events (Snan Schedule)
-  const makarSankranti = await prisma.event.create({
+  await prisma.event.create({
     data: {
       name: "Makar Sankranti Snan",
       nameHi: "मकर संक्रांति स्नान",
