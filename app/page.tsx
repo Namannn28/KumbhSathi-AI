@@ -18,9 +18,12 @@ export default function Home() {
               <p className="text-xs text-gray-600">हर कदम में साथ</p>
             </div>
           </div>
-          <div className="flex gap-3">
-            <a href="/auth/login" className="px-6 py-2 bg-sacred-600 text-white rounded-lg hover:bg-sacred-700 font-semibold transition">
+          <div className="flex gap-3 items-center">
+            <a href="/auth/login" className="px-4 py-2 text-sacred-600 hover:text-sacred-750 font-semibold transition">
               Login
+            </a>
+            <a href="/auth/signup" className="px-6 py-2 bg-sacred-600 text-white rounded-lg hover:bg-sacred-700 font-semibold transition shadow">
+              Sign Up
             </a>
           </div>
         </div>
@@ -44,7 +47,7 @@ export default function Home() {
             Get real-time guidance, emergency support, and community connection in your language. Navigate safely among 50 million pilgrims.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
-            <a href="/auth/login" className="px-8 py-4 bg-white text-sacred-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg transition transform hover:scale-105">
+            <a href="/auth/signup" className="px-8 py-4 bg-white text-sacred-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg transition transform hover:scale-105">
               Get Started Now
             </a>
             <a href="#features" className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-sacred-600 transition">
@@ -185,7 +188,7 @@ export default function Home() {
             Join millions of pilgrims experiencing Mahakumbh safely with KumbhSaarthi AI
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="/auth/login" className="px-8 py-4 bg-white text-sacred-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg transition transform hover:scale-105">
+            <a href="/auth/signup" className="px-8 py-4 bg-white text-sacred-600 font-bold rounded-lg hover:bg-gray-100 shadow-lg transition transform hover:scale-105">
               Start Now (Free)
             </a>
             <a href="#features" className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-sacred-600 transition">
