@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
@@ -15,11 +14,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "lh3.googleusercontent.com", // Google Photos
+        hostname: "lh3.googleusercontent.com",
       },
       {
         protocol: "https",
-        hostname: "*.cloudinary.com", // Cloudinary for Kumbh images
+        hostname: "*.cloudinary.com",
       },
     ],
   },

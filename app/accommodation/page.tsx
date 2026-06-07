@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Search, MapPin, DollarSign } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 
 export default function AccommodationPage() {

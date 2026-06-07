@@ -9,7 +9,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authConfig);
+    const session = (await getServerSession(authConfig)) as any;
     if (!session?.user) {
       return NextResponse.json(
         error("UNAUTHORIZED", "Please login first"),
@@ -141,7 +141,7 @@ Available FAQ context: ${JSON.stringify(faqDocs.map((d) => d.answer))}`;
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authConfig);
+    const session = (await getServerSession(authConfig)) as any;
     if (!session?.user) {
       return NextResponse.json(
         error("UNAUTHORIZED", "Please login first"),
