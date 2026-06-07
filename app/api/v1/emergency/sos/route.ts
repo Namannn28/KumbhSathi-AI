@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     const parsedBody = await parseJsonBody(req, sosBodySchema);
     if (parsedBody.response) return parsedBody.response;
 
-    const { type, description, latitude, longitude, sector } = parsedBody.data;
+    const { type, description, latitude, longitude, sector } = parsedBody.data as any;
 
     // Determine severity based on type
     const severityMap: Record<string, EmergencySeverity> = {
