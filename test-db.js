@@ -1,21 +1,18 @@
-const { Client } = require('pg');
+const { PrismaClient } = require('@prisma/client');
 
 async function testConn() {
-  // Test pooler with transaction mode (port 6543)
-  const connectionString = 'postgresql://postgres.tstkjavbwzmiivjjyiln:Naman_2005%40%40%40@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require';
-  console.log("Connecting to pooler URL:", connectionString.replace(/Naman_2005.*/, 'XXX'));
+  process.env.DATABASE_URL = 'postgresql://postgres.tstkjavbwzmiivjjyiln:Naman_2005%40%40%40@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1';
+  console.log("Connecting using Prisma with DATABASE_URL:", process.env.DATABASE_URL.replace(/Naman_2005.*/, 'XXX'));
   
-  const client = new Client({ connectionString });
+  const prisma = new PrismaClient();
   
   try {
-    await client.connect();
-    console.log("Successfully connected to the database via pooler!");
-    const res = await client.query('SELECT COUNT(*) FROM "User"');
-    console.log("Total users in database:", res.rows[0].count);
+    const count = await prisma.user.count();
+    console.log("Successfully connected! Total users in database:", count);
   } catch (err) {
-    console.error("Connection failed:", err.message);
+    console.error("Prisma connection failed:", err.message);
   } finally {
-    await client.end();
+    await prisma.$disconnect();
   }
 }
 
