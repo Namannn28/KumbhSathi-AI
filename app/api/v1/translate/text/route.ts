@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { success, error } from "@/lib/utils";
 import prisma from "@/lib/db";
+import { z } from "zod";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import {
+  getClientIdentifier,
+  languageSchema,
+  limitedTextSchema,
+  parseJsonBody,
+} from "@/lib/validation";
 
 // Mock translation function - in production, use actual API
 async function translateText(text: string, targetLang: string): Promise<string> {
@@ -23,24 +31,38 @@ async function translateText(text: string, targetLang: string): Promise<string> 
   return `[${targetLang}] ${text}`;
 }
 
+const translateBodySchema = z.object({
+  text: limitedTextSchema(1000),
+  sourceLang: languageSchema.default("en"),
+  targetLang: languageSchema,
+});
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { text, sourceLang, targetLang } = body;
+    const rateLimitCheck = await checkRateLimit(
+      getClientIdentifier(req, "translate"),
+      RATE_LIMITS.TRANSLATION.max,
+      RATE_LIMITS.TRANSLATION.window
+    );
 
-    if (!text || !targetLang) {
+    if (!rateLimitCheck.success) {
       return NextResponse.json(
-        error("MISSING_FIELD", "Text and targetLang required"),
-        { status: 400 }
+        error("RATE_LIMITED", "Too many translation requests"),
+        { status: 429 }
       );
     }
+
+    const parsedBody = await parseJsonBody(req, translateBodySchema);
+    if (parsedBody.response) return parsedBody.response;
+
+    const { text, sourceLang, targetLang } = parsedBody.data;
 
     // Check cache first
     const cached = await prisma.translationCache.findUnique({
       where: {
         sourceText_sourceLang_targetLang: {
           sourceText: text,
-          sourceLang: sourceLang || "en",
+          sourceLang,
           targetLang,
         },
       },
@@ -62,7 +84,7 @@ export async function POST(req: NextRequest) {
     await prisma.translationCache.create({
       data: {
         sourceText: text,
-        sourceLang: sourceLang || "en",
+        sourceLang,
         targetLang,
         translatedText: translated,
       },
@@ -76,7 +98,7 @@ export async function POST(req: NextRequest) {
     );
   } catch (err: any) {
     return NextResponse.json(
-      error("ERROR", err.message || "Translation failed"),
+      error("ERROR", "Translation failed"),
       { status: 500 }
     );
   }

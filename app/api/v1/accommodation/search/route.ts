@@ -1,19 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 import { success, error } from "@/lib/utils";
 import prisma from "@/lib/db";
+import { z } from "zod";
+import {
+  accommodationTypeSchema,
+  optionalSectorSchema,
+  validationErrorResponse,
+} from "@/lib/validation";
+
+const searchQuerySchema = z.object({
+  sector: optionalSectorSchema,
+  type: z.preprocess(
+    (value) => value || undefined,
+    accommodationTypeSchema.optional()
+  ),
+  budgetMax: z.preprocess(
+    (value) => value || undefined,
+    z.coerce.number().int().min(0).max(100000).optional()
+  ),
+  guests: z.preprocess(
+    (value) => value || "1",
+    z.coerce.number().int().min(1).max(50)
+  ),
+});
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const sector = searchParams.get("sector");
-    const type = searchParams.get("type");
-    const budgetMax = searchParams.get("budgetMax");
-    const guests = parseInt(searchParams.get("guests") || "1");
+    const parsed = searchQuerySchema.safeParse(Object.fromEntries(searchParams));
+
+    if (!parsed.success) {
+      return validationErrorResponse(
+        parsed.error.issues[0]?.message || "Invalid search parameters"
+      );
+    }
+
+    const { sector, type, budgetMax, guests } = parsed.data;
 
     let where: any = {};
     if (sector) where.sector = sector;
     if (type) where.type = type;
-    if (budgetMax) where.priceMax = { lte: parseInt(budgetMax) };
+    if (budgetMax !== undefined) where.priceMax = { lte: budgetMax };
 
     const accommodations = await prisma.accommodation.findMany({
       where,

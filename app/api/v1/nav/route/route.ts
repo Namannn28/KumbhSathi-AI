@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { success, error, calculateDistance } from "@/lib/utils";
 import prisma from "@/lib/db";
+import { z } from "zod";
+import {
+  languageSchema,
+  latitudeSchema,
+  longitudeSchema,
+  validationErrorResponse,
+} from "@/lib/validation";
 
 interface RouteStep {
   instruction: string;
@@ -8,15 +15,30 @@ interface RouteStep {
   distance: number;
 }
 
+const routeQuerySchema = z.object({
+  fromLat: z.preprocess((value) => value || "25.434", latitudeSchema),
+  fromLng: z.preprocess((value) => value || "81.844", longitudeSchema),
+  toLat: z.preprocess((value) => value || "25.4358", latitudeSchema),
+  toLng: z.preprocess((value) => value || "81.8463", longitudeSchema),
+  mode: z.preprocess(
+    (value) => value || "normal",
+    z.enum(["normal", "crowd_aware"])
+  ),
+  language: z.preprocess((value) => value || "en", languageSchema),
+});
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const fromLat = parseFloat(searchParams.get("fromLat") || "25.434");
-    const fromLng = parseFloat(searchParams.get("fromLng") || "81.844");
-    const toLat = parseFloat(searchParams.get("toLat") || "25.4358");
-    const toLng = parseFloat(searchParams.get("toLng") || "81.8463");
-    const mode = searchParams.get("mode") || "normal";
-    const language = searchParams.get("language") || "en";
+    const parsed = routeQuerySchema.safeParse(Object.fromEntries(searchParams));
+
+    if (!parsed.success) {
+      return validationErrorResponse(
+        parsed.error.issues[0]?.message || "Invalid route parameters"
+      );
+    }
+
+    const { fromLat, fromLng, toLat, toLng, mode, language } = parsed.data;
 
     const totalDistance = calculateDistance(fromLat, fromLng, toLat, toLng);
     const estimatedTime = Math.ceil(totalDistance * 12); // ~12 min per km on foot
