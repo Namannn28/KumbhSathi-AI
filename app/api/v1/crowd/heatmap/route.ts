@@ -1,11 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import { success, error } from "@/lib/utils";
 import prisma from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/auth.config";
+import { z } from "zod";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import {
+  optionalSectorSchema,
+  sectorSchema,
+  validationErrorResponse,
+} from "@/lib/validation";
+
+const crowdQuerySchema = z.object({
+  sector: optionalSectorSchema,
+});
+
+const crowdUpdateSchema = z.object({
+  sector: sectorSchema,
+  densityScore: z.number().finite().min(0).max(1),
+  personCount: z.number().int().min(0).max(1000000),
+  predictions: z.unknown().optional(),
+});
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const sector = searchParams.get("sector");
+    const parsed = crowdQuerySchema.safeParse(Object.fromEntries(searchParams));
+
+    if (!parsed.success) {
+      return validationErrorResponse(
+        parsed.error.issues[0]?.message || "Invalid crowd parameters"
+      );
+    }
+
+    const { sector } = parsed.data;
 
     let where: any = {};
     if (sector) where.sector = sector;
@@ -100,38 +128,41 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { sector, densityScore, personCount, predictions } = body;
+    const parsed = crowdUpdateSchema.safeParse(body);
 
-    // Validate inputs
-    if (!sector || typeof densityScore !== "number") {
-      return NextResponse.json(
-        error("VALIDATION_ERROR", "Missing or invalid parameters"),
-        { status: 400 }
+    if (!parsed.success) {
+      return validationErrorResponse(
+        parsed.error.issues[0]?.message || "Invalid crowd update payload"
       );
     }
 
-    if (densityScore < 0 || densityScore > 1) {
+    const rateLimitCheck = await checkRateLimit(
+      `crowd-update:${user.id}`,
+      RATE_LIMITS.GENERAL_API.max,
+      RATE_LIMITS.GENERAL_API.window
+    );
+
+    if (!rateLimitCheck.success) {
       return NextResponse.json(
-        error("VALIDATION_ERROR", "Density score must be between 0 and 1"),
-        { status: 400 }
+        error("RATE_LIMITED", "Too many crowd update requests"),
+        { status: 429 }
       );
     }
 
-    if (personCount < 0 || personCount > 1000000) {
-      return NextResponse.json(
-        error("VALIDATION_ERROR", "Invalid person count"),
-        { status: 400 }
-      );
+    const { sector, densityScore, personCount, predictions } = parsed.data;
+    const snapshotData: any = {
+      sector,
+      densityScore,
+      personCount,
+      dataSources: ["API_REPORT", `USER:${user.id}`],
+    };
+
+    if (predictions !== undefined) {
+      snapshotData.predictions = predictions;
     }
 
     const snapshot = await prisma.crowdSnapshot.create({
-      data: {
-        sector,
-        densityScore,
-        personCount,
-        dataSources: ["API_REPORT", `USER:${user.id}`],
-        predictions,
-      },
+      data: snapshotData,
     });
 
     // Log for audit trail
