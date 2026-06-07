@@ -3,37 +3,12 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.yourdomain.com",
-      },
-      {
-        protocol: "https",
-        hostname: "vercel.blob.com",
-      },
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-      },
-      {
-        protocol: "https",
-        hostname: "*.cloudinary.com",
-      },
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "source.unsplash.com" },
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
     ],
-  },
-  serverExternalPackages: ["@prisma/client"],
-  headers: async () => {
-    return [
-      {
-        source: "/api/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-store, max-age=0",
-          },
-        ],
-      },
-    ];
+    unoptimized: true,
   },
 };
 
