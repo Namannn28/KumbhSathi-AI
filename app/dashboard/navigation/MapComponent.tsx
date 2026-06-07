@@ -5,12 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
 
 export default function MapComponent({ filteredLocations }: { filteredLocations: any[] }) {
-  const [mapId, setMapId] = useState<string>("");
-
   useEffect(() => {
-    // Generate a unique ID to prevent React Strict Mode "Map container is already initialized" error
-    setMapId(`map-${Date.now()}`);
-    
     // Fix for Leaflet marker icons in Next.js
     if (typeof window !== 'undefined') {
       const L = require('leaflet');
@@ -21,13 +16,19 @@ export default function MapComponent({ filteredLocations }: { filteredLocations:
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
       });
     }
-  }, []);
 
-  if (!mapId) return null;
+    // Ultimate cleanup for React Strict Mode "Map container is already initialized" error
+    return () => {
+      const container = document.getElementById('map-container') as any;
+      if (container && container._leaflet_id) {
+        container._leaflet_id = null;
+      }
+    };
+  }, []);
 
   return (
     <MapContainer 
-      key={mapId}
+      id="map-container"
       center={[25.4270, 81.8847]} 
       zoom={14} 
       className="w-full h-full z-10"
