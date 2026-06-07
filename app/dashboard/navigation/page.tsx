@@ -4,13 +4,11 @@ import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import { Search, MapPin, Navigation as NavIcon, Filter } from "lucide-react";
 import { locations } from "@/lib/data/locations";
-import 'leaflet/dist/leaflet.css';
-
-// Dynamically import Leaflet components to avoid SSR issues
-const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false, loading: () => <MapLoading /> });
-const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false });
-const Marker = dynamic(() => import('react-leaflet').then(m => m.Marker), { ssr: false });
-const Popup = dynamic(() => import('react-leaflet').then(m => m.Popup), { ssr: false });
+// Dynamically import our custom MapComponent to avoid SSR and Leaflet init issues
+const MapComponent = dynamic(() => import('./MapComponent'), { 
+  ssr: false, 
+  loading: () => <MapLoading /> 
+});
 
 const MapLoading = () => (
   <div className="w-full h-full bg-gray-100 dark:bg-gray-800 flex flex-col items-center justify-center text-gray-500">
@@ -26,16 +24,6 @@ export default function NavigationPage() {
 
   useEffect(() => {
     setIsMounted(true);
-    // Fix for Leaflet marker icons in Next.js
-    if (typeof window !== 'undefined') {
-      const L = require('leaflet');
-      delete L.Icon.Default.prototype._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-      });
-    }
   }, []);
 
   const categories = [
@@ -116,31 +104,7 @@ export default function NavigationPage() {
       {/* Map Area */}
       <div className="flex-1 relative h-[60vh] md:h-full z-10 bg-gray-200 dark:bg-gray-800">
         {isMounted ? (
-          <MapContainer 
-            center={[25.4270, 81.8847]} 
-            zoom={14} 
-            className="w-full h-full z-10"
-            zoomControl={false}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {filteredLocations.map((loc) => (
-              <Marker key={loc.id} position={[loc.lat, loc.lng]}>
-                <Popup className="custom-popup">
-                  <div className="p-1 min-w-[200px]">
-                    <h3 className="font-bold text-gray-900 mb-1">{loc.name}</h3>
-                    <p className="text-xs text-gray-600 font-hindi mb-2">{loc.nameHi}</p>
-                    <p className="text-xs text-gray-500 mb-3 line-clamp-2">{loc.description}</p>
-                    <button className="w-full bg-sacred-500 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-sacred-600 transition-colors">
-                      Get Directions
-                    </button>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
+          <MapComponent filteredLocations={filteredLocations} />
         ) : (
           <MapLoading />
         )}
