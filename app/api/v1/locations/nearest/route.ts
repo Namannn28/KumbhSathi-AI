@@ -57,8 +57,9 @@ export async function GET(req: NextRequest) {
       )
     );
   } catch (err: any) {
+    console.error("[ERROR] Nearest locations GET:", err);
     return NextResponse.json(
-      error("ERROR", err.message || "Failed to fetch locations"),
+      error("ERROR", "Failed to fetch locations"),
       { status: 500 }
     );
   }

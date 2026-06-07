@@ -71,8 +71,9 @@ export async function GET(req: NextRequest) {
       )
     );
   } catch (err: any) {
+    console.error("[ERROR] Accommodation Search GET:", err);
     return NextResponse.json(
-      error("ERROR", err.message || "Failed to search accommodations"),
+      error("ERROR", "Failed to search accommodations"),
       { status: 500 }
     );
   }

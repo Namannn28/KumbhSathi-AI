@@ -3,10 +3,44 @@ import { success, error } from "@/lib/utils";
 import prisma from "@/lib/db";
 import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createHmac, timingSafeEqual } from "crypto";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const WHATSAPP_API_TOKEN = process.env.WHATSAPP_BUSINESS_TOKEN;
 const WHATSAPP_PHONE_ID = process.env.WHATSAPP_BUSINESS_PHONE_ID;
+const MAX_WEBHOOK_BODY_BYTES = 100000;
+
+function maskPhone(phoneNumber: string) {
+  return phoneNumber.replace(/\d(?=\d{4})/g, "*");
+}
+
+function isValidPhoneNumber(phoneNumber: string) {
+  return /^\d{8,15}$/.test(phoneNumber);
+}
+
+function verifyWebhookSignature(req: NextRequest, rawBody: string) {
+  const appSecret = process.env.WHATSAPP_APP_SECRET;
+
+  if (!appSecret) {
+    return process.env.NODE_ENV !== "production";
+  }
+
+  const signature = req.headers.get("x-hub-signature-256");
+  if (!signature?.startsWith("sha256=")) {
+    return false;
+  }
+
+  const expected = `sha256=${createHmac("sha256", appSecret)
+    .update(rawBody)
+    .digest("hex")}`;
+  const actualBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expected);
+
+  return (
+    actualBuffer.length === expectedBuffer.length &&
+    timingSafeEqual(actualBuffer, expectedBuffer)
+  );
+}
 
 export async function GET(req: NextRequest) {
   // WhatsApp webhook verification
@@ -14,10 +48,14 @@ export async function GET(req: NextRequest) {
   const mode = searchParams.get("hub.mode");
   const token = searchParams.get("hub.verify_token");
   const challenge = searchParams.get("hub.challenge");
+  const verifyToken = process.env.WHATSAPP_VERIFY_TOKEN;
 
-  if (mode === "subscribe" && token === process.env.WHATSAPP_VERIFY_TOKEN) {
+  if (mode === "subscribe" && verifyToken && token === verifyToken && challenge) {
     console.log("[WhatsApp] Webhook verified");
-    return NextResponse.json(challenge);
+    return new NextResponse(challenge, {
+      status: 200,
+      headers: { "Content-Type": "text/plain" },
+    });
   }
 
   return NextResponse.json(error("FORBIDDEN", "Verification failed"), {
@@ -27,7 +65,21 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const rawBody = await req.text();
+
+    if (rawBody.length > MAX_WEBHOOK_BODY_BYTES) {
+      return NextResponse.json(error("PAYLOAD_TOO_LARGE", "Payload too large"), {
+        status: 413,
+      });
+    }
+
+    if (!verifyWebhookSignature(req, rawBody)) {
+      return NextResponse.json(error("UNAUTHORIZED", "Invalid signature"), {
+        status: 401,
+      });
+    }
+
+    const body = JSON.parse(rawBody);
     const { entry } = body;
 
     if (!entry || !entry[0]?.changes) {
@@ -42,10 +94,14 @@ export async function POST(req: NextRequest) {
     }
 
     const message = value.messages[0];
-    const phoneNumber = message.from;
-    const messageText = message.text?.body || "";
+    const phoneNumber = String(message.from || "");
+    const messageText = String(message.text?.body || "").trim().slice(0, 1000);
 
-    console.log(`[WhatsApp] Message from ${phoneNumber}: ${messageText}`);
+    if (!isValidPhoneNumber(phoneNumber) || !messageText) {
+      return NextResponse.json(success(null));
+    }
+
+    console.log(`[WhatsApp] Message from ${maskPhone(phoneNumber)}`);
 
     // Rate limiting
     const rateLimitCheck = await checkRateLimit(
@@ -74,7 +130,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Process message with AI
-    const response = await processWhatsAppMessage(messageText, phoneNumber);
+    const response = await processWhatsAppMessage(messageText);
 
     // Send response back
     await sendWhatsAppMessage(phoneNumber, response);
@@ -92,13 +148,8 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function processWhatsAppMessage(
-  messageText: string,
-  phoneNumber: string
-): Promise<string> {
+async function processWhatsAppMessage(messageText: string): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
     // Detect intent from message
     let response = "";
 
@@ -163,6 +214,12 @@ We're here 24/7!`;
 
 'समाचार' लिखिए समाचार के लिए`;
     } else {
+      if (!process.env.GEMINI_API_KEY) {
+        return "AI assistant is temporarily unavailable. For urgent help, call 112 or 1800-200-0001.";
+      }
+
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
       // Default: Use AI to respond
       const prompt = `You are KumbhSaarthi, WhatsApp assistant for Mahakumbh pilgrims.
 User asks: "${messageText}"
@@ -196,7 +253,7 @@ async function sendWhatsAppMessage(
     }
 
     const response = await fetch(
-      `https://graph.instagram.com/v18.0/${WHATSAPP_PHONE_ID}/messages`,
+      `https://graph.facebook.com/v18.0/${WHATSAPP_PHONE_ID}/messages`,
       {
         method: "POST",
         headers: {

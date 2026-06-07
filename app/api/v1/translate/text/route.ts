@@ -97,6 +97,7 @@ export async function POST(req: NextRequest) {
       )
     );
   } catch (err: any) {
+    console.error("[ERROR] Translate POST:", err);
     return NextResponse.json(
       error("ERROR", "Translation failed"),
       { status: 500 }

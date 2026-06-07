@@ -132,7 +132,7 @@ Available FAQ context: ${JSON.stringify(faqDocs.map((d) => d.answer))}`;
     await prisma.chatMessage.create({
       data: {
         userId,
-        sessionId,
+        sessionId: sessionId || "default",
         role: "USER",
         content: message,
         inputType: "text",
@@ -142,7 +142,7 @@ Available FAQ context: ${JSON.stringify(faqDocs.map((d) => d.answer))}`;
     await prisma.chatMessage.create({
       data: {
         userId,
-        sessionId,
+        sessionId: sessionId || "default",
         role: "ASSISTANT",
         content: responseText,
         agentUsed: "GEMINI_CHAT",
@@ -204,8 +204,9 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(success(messages, "Chat history retrieved"));
   } catch (err: any) {
+    console.error("[ERROR] Chat GET:", err);
     return NextResponse.json(
-      error("ERROR", err.message || "Failed to retrieve chat history"),
+      error("ERROR", "Failed to retrieve chat history"),
       { status: 500 }
     );
   }

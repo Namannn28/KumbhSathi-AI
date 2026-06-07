@@ -74,8 +74,9 @@ export async function GET(req: NextRequest) {
       success(formatted, `Found ${formatted.length} events`)
     );
   } catch (err: any) {
+    console.error("[ERROR] Events GET:", err);
     return NextResponse.json(
-      error("ERROR", err.message || "Failed to retrieve events"),
+      error("ERROR", "Failed to retrieve events"),
       { status: 500 }
     );
   }

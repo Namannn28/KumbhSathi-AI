@@ -41,7 +41,7 @@ const sosBodySchema = z
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authConfig);
+    const session = (await getServerSession(authConfig)) as any;
     if (!session?.user) {
       return NextResponse.json(
         error("UNAUTHORIZED", "Please login first"),
@@ -151,7 +151,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authConfig);
+    const session = (await getServerSession(authConfig)) as any;
     if (!session?.user) {
       return NextResponse.json(
         error("UNAUTHORIZED", "Please login first"),
@@ -187,8 +187,9 @@ export async function GET(req: NextRequest) {
       success(emergencies, "Emergency history retrieved")
     );
   } catch (err: any) {
+    console.error("[ERROR] SOS GET:", err);
     return NextResponse.json(
-      error("ERROR", err.message || "Failed to retrieve emergencies"),
+      error("ERROR", "Failed to retrieve emergencies"),
       { status: 500 }
     );
   }

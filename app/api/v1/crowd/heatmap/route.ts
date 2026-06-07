@@ -101,8 +101,9 @@ export async function GET(req: NextRequest) {
       })
     );
   } catch (err: any) {
+    console.error("[ERROR] Heatmap GET:", err);
     return NextResponse.json(
-      error("ERROR", err.message || "Failed to retrieve crowd data"),
+      error("ERROR", "Failed to retrieve crowd data"),
       { status: 500 }
     );
   }
@@ -110,7 +111,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authConfig);
+    const session = (await getServerSession(authConfig)) as any;
     if (!session?.user) {
       return NextResponse.json(
         error("UNAUTHORIZED", "Authentication required"),
