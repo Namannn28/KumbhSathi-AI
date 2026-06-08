@@ -8,7 +8,6 @@ import { majorCities, popularFlights, popularTrains } from "@/lib/data/travel";
 export default function TravelPage() {
   const [activeTab, setActiveTab] = useState("flights");
   const [fromCity, setFromCity] = useState("DEL");
-  const [liveTrains, setLiveTrains] = useState<any>(null);
   const [loadingTrain, setLoadingTrain] = useState(false);
   
   const flights = popularFlights.filter(f => f.fromCode === fromCity);
@@ -23,7 +22,6 @@ export default function TravelPage() {
         body: JSON.stringify({ from: fromCity, to: 'UJN', date: '2028-04-14' })
       });
       const data = await res.json();
-      setLiveTrains(data);
       alert(`Live IRCTC Status: ${data.status}\nMessage: ${data.message}`);
     } catch (error) {
       console.error(error);
