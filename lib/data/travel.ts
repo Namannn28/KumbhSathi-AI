@@ -33,67 +33,67 @@ export interface TrainResult {
 }
 
 export const popularFlights: FlightResult[] = [
-  { id: "f1", airline: "Air India", airlineLogo: "✈️", from: "New Delhi", fromCode: "DEL", to: "Prayagraj", toCode: "IXD", departure: "06:00", arrival: "07:30", duration: "1h 30m", stops: 0, price: 4500, priceLabel: "₹4,500", class: "Economy", seatsLeft: 12 },
-  { id: "f2", airline: "IndiGo", airlineLogo: "✈️", from: "Mumbai", fromCode: "BOM", to: "Prayagraj", toCode: "IXD", departure: "08:15", arrival: "10:30", duration: "2h 15m", stops: 0, price: 5800, priceLabel: "₹5,800", class: "Economy", seatsLeft: 8 },
-  { id: "f3", airline: "SpiceJet", airlineLogo: "✈️", from: "Bengaluru", fromCode: "BLR", to: "Prayagraj", toCode: "IXD", departure: "09:00", arrival: "11:45", duration: "2h 45m", stops: 1, price: 6200, priceLabel: "₹6,200", class: "Economy", seatsLeft: 5 },
-  { id: "f4", airline: "Vistara", airlineLogo: "✈️", from: "Kolkata", fromCode: "CCU", to: "Prayagraj", toCode: "IXD", departure: "07:30", arrival: "09:00", duration: "1h 30m", stops: 0, price: 4800, priceLabel: "₹4,800", class: "Economy", seatsLeft: 15 },
-  { id: "f5", airline: "Air India", airlineLogo: "✈️", from: "Chennai", fromCode: "MAA", to: "Prayagraj", toCode: "IXD", departure: "10:00", arrival: "13:00", duration: "3h 00m", stops: 1, price: 7500, priceLabel: "₹7,500", class: "Economy", seatsLeft: 3 },
-  { id: "f6", airline: "IndiGo", airlineLogo: "✈️", from: "Hyderabad", fromCode: "HYD", to: "Prayagraj", toCode: "IXD", departure: "11:30", arrival: "14:00", duration: "2h 30m", stops: 1, price: 5500, priceLabel: "₹5,500", class: "Economy", seatsLeft: 10 },
+  { id: "f1", airline: "Air India", airlineLogo: "✈️", from: "New Delhi", fromCode: "DEL", to: "Ujjain (Indore)", toCode: "IDR", departure: "06:00", arrival: "07:30", duration: "1h 30m", stops: 0, price: 4500, priceLabel: "₹4,500", class: "Economy", seatsLeft: 12 },
+  { id: "f2", airline: "IndiGo", airlineLogo: "✈️", from: "Mumbai", fromCode: "BOM", to: "Ujjain (Indore)", toCode: "IDR", departure: "08:15", arrival: "10:30", duration: "2h 15m", stops: 0, price: 5800, priceLabel: "₹5,800", class: "Economy", seatsLeft: 8 },
+  { id: "f3", airline: "SpiceJet", airlineLogo: "✈️", from: "Bengaluru", fromCode: "BLR", to: "Ujjain (Indore)", toCode: "IDR", departure: "09:00", arrival: "11:45", duration: "2h 45m", stops: 1, price: 6200, priceLabel: "₹6,200", class: "Economy", seatsLeft: 5 },
+  { id: "f4", airline: "Vistara", airlineLogo: "✈️", from: "Kolkata", fromCode: "CCU", to: "Ujjain (Indore)", toCode: "IDR", departure: "07:30", arrival: "09:00", duration: "1h 30m", stops: 0, price: 4800, priceLabel: "₹4,800", class: "Economy", seatsLeft: 15 },
+  { id: "f5", airline: "Air India", airlineLogo: "✈️", from: "Chennai", fromCode: "MAA", to: "Ujjain (Indore)", toCode: "IDR", departure: "10:00", arrival: "13:00", duration: "3h 00m", stops: 1, price: 7500, priceLabel: "₹7,500", class: "Economy", seatsLeft: 3 },
+  { id: "f6", airline: "IndiGo", airlineLogo: "✈️", from: "Hyderabad", fromCode: "HYD", to: "Ujjain (Indore)", toCode: "IDR", departure: "11:30", arrival: "14:00", duration: "2h 30m", stops: 1, price: 5500, priceLabel: "₹5,500", class: "Economy", seatsLeft: 10 },
 ];
 
 export const popularTrains: TrainResult[] = [
   {
-    id: "t1", trainNo: "12417", trainName: "Prayagraj Express",
-    from: "New Delhi", fromCode: "NDLS", to: "Prayagraj Jn", toCode: "PRYJ",
-    departure: "21:30", arrival: "05:55", duration: "8h 25m",
+    id: "t1", trainNo: "12417", trainName: "Ujjain Express",
+    from: "New Delhi", fromCode: "NDLS", to: "Ujjain Jn", toCode: "UJN",
+    departure: "22:10", arrival: "07:15", duration: "9h 05m",
     days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     classes: [
-      { name: "3A", available: 45, price: 850 },
-      { name: "2A", available: 12, price: 1250 },
-      { name: "SL", available: 120, price: 350 },
+      { name: "1A", available: 0, price: 2500 },
+      { name: "2A", available: 12, price: 1500 },
+      { name: "3A", available: 45, price: 1000 },
+      { name: "SL", available: 0, price: 400 }
     ],
     status: "available",
   },
   {
-    id: "t2", trainNo: "12275", trainName: "Allahabad Duronto",
-    from: "New Delhi", fromCode: "NDLS", to: "Prayagraj Jn", toCode: "PRYJ",
-    departure: "23:00", arrival: "06:00", duration: "7h 00m",
-    days: ["Mon", "Thu", "Sat"],
+    id: "t2", trainNo: "22438", trainName: "Vande Bharat Exp",
+    from: "New Delhi", fromCode: "NDLS", to: "Ujjain Jn", toCode: "UJN",
+    departure: "06:00", arrival: "14:00", duration: "8h 00m",
+    days: ["Mon", "Wed", "Thu", "Fri", "Sat", "Sun"],
     classes: [
-      { name: "3A", available: 8, price: 1100 },
-      { name: "2A", available: 4, price: 1650 },
-      { name: "1A", available: 2, price: 2800 },
+      { name: "EC", available: 5, price: 2800 },
+      { name: "CC", available: 0, price: 1400 }
     ],
     status: "available",
   },
   {
-    id: "t3", trainNo: "15017", trainName: "Gorakhpur Express",
-    from: "Mumbai CST", fromCode: "CSMT", to: "Prayagraj Jn", toCode: "PRYJ",
-    departure: "00:10", arrival: "22:30", duration: "22h 20m",
-    days: ["Tue", "Fri"],
-    classes: [
-      { name: "3A", available: 30, price: 1450 },
-      { name: "2A", available: 10, price: 2100 },
-      { name: "SL", available: 85, price: 550 },
-    ],
-    status: "available",
-  },
-  {
-    id: "t4", trainNo: "12311", trainName: "Kalka Mail",
-    from: "Howrah", fromCode: "HWH", to: "Prayagraj Jn", toCode: "PRYJ",
-    departure: "19:40", arrival: "05:10", duration: "9h 30m",
+    id: "t3", trainNo: "12141", trainName: "LTT UJN SF Exp",
+    from: "Mumbai CST", fromCode: "CSMT", to: "Ujjain Jn", toCode: "UJN",
+    departure: "23:35", arrival: "21:30", duration: "21h 55m",
     days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     classes: [
-      { name: "3A", available: 55, price: 950 },
-      { name: "2A", available: 18, price: 1400 },
-      { name: "SL", available: 150, price: 400 },
+      { name: "2A", available: 0, price: 2100 },
+      { name: "3A", available: 8, price: 1400 },
+      { name: "SL", available: 0, price: 550 }
     ],
     status: "available",
   },
   {
-    id: "t5", trainNo: "14209", trainName: "Prayag Raj Express",
-    from: "Lucknow", fromCode: "LKO", to: "Prayagraj Jn", toCode: "PRYJ",
-    departure: "06:00", arrival: "10:00", duration: "4h 00m",
+    id: "t4", trainNo: "12321", trainName: "Howrah UJN Exp",
+    from: "Howrah", fromCode: "HWH", to: "Ujjain Jn", toCode: "UJN",
+    departure: "23:55", arrival: "15:00", duration: "15h 05m",
+    days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    classes: [
+      { name: "2A", available: 2, price: 1800 },
+      { name: "3A", available: 0, price: 1200 },
+      { name: "SL", available: 0, price: 450 }
+    ],
+    status: "available",
+  },
+  {
+    id: "t5", trainNo: "14209", trainName: "Intercity Exp",
+    from: "Lucknow", fromCode: "LKO", to: "Ujjain Jn", toCode: "UJN",
+    departure: "07:30", arrival: "11:45", duration: "4h 15m",
     days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     classes: [
       { name: "3A", available: 60, price: 450 },

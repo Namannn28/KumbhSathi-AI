@@ -132,7 +132,7 @@ export default function LandingPage() {
               { step: 1, title: "Register", desc: "Sign up with your phone number" },
               { step: 2, title: "Personalize", desc: "Set language & preferences" },
               { step: 3, title: "Plan", desc: "Book travel and accommodation" },
-              { step: 4, title: "Navigate", desc: "Use app offline at Prayagraj" }
+              { step: 4, title: "Navigate", desc: "Use app offline at Ujjain" }
             ].map((item, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center text-center relative z-10">
                 <div className="w-16 h-16 rounded-full sacred-gradient text-white flex items-center justify-center text-2xl font-bold shadow-lg mb-4">
@@ -152,7 +152,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
               <h3 className="text-2xl font-bold text-sacred-400 mb-4">KumbhSaarthi</h3>
-              <p className="text-gray-400">Your trusted digital companion for Mahakumbh 2028, Prayagraj.</p>
+              <p className="text-gray-400">Your trusted digital companion for Mahakumbh 2028, Ujjain.</p>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-4">Emergency Contacts</h4>

@@ -143,7 +143,7 @@ export default function DashboardHome() {
             {/* Weather Widget */}
             <div className="glass-card p-6 bg-gradient-to-br from-blue-50 to-emerald-50 dark:from-blue-900/20 dark:to-emerald-900/20">
               <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
-                <CloudSun size={16} /> Prayagraj Weather
+                <CloudSun size={16} /> Ujjain Weather
               </h2>
               <div className="flex items-center justify-between">
                 <div>

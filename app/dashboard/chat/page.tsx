@@ -30,7 +30,7 @@ export default function ChatPage() {
     "Crowd status",
     "Emergency contacts",
     "Accommodation",
-    "How to reach Prayagraj"
+    "How to reach Ujjain"
   ];
 
   const scrollToBottom = () => {

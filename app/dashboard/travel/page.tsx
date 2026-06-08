@@ -8,9 +8,30 @@ import { majorCities, popularFlights, popularTrains } from "@/lib/data/travel";
 export default function TravelPage() {
   const [activeTab, setActiveTab] = useState("flights");
   const [fromCity, setFromCity] = useState("DEL");
+  const [liveTrains, setLiveTrains] = useState<any>(null);
+  const [loadingTrain, setLoadingTrain] = useState(false);
   
   const flights = popularFlights.filter(f => f.fromCode === fromCity);
   const trains = popularTrains.filter(t => t.fromCode === fromCity);
+
+  const checkLiveIRCTC = async () => {
+    setLoadingTrain(true);
+    try {
+      const res = await fetch('/api/trains', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: fromCity, to: 'UJN', date: '2028-04-14' })
+      });
+      const data = await res.json();
+      setLiveTrains(data);
+      alert(`Live IRCTC Status: ${data.status}\nMessage: ${data.message}`);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to connect to IRCTC proxy API");
+    } finally {
+      setLoadingTrain(false);
+    }
+  };
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 pb-24 md:pb-8">
@@ -20,7 +41,7 @@ export default function TravelPage() {
           <Plane className="text-sacred-500" size={32} />
           Travel Booking
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Plan your journey to Prayagraj (IXD/PRYJ)</p>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Plan your journey to Ujjain (IDR/UJN)</p>
       </div>
 
       {/* Search Box */}
@@ -71,7 +92,7 @@ export default function TravelPage() {
             <label className="block text-xs font-medium text-gray-500 mb-1">To</label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-sacred-500" size={18} />
-              <input type="text" disabled value="Prayagraj (PRYJ/IXD)" className="input-field pl-10 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white border-transparent" />
+              <input type="text" disabled value="Ujjain (UJN/IDR)" className="input-field pl-10 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white border-transparent" />
             </div>
           </div>
 
@@ -135,12 +156,12 @@ export default function TravelPage() {
                       {flight.seatsLeft < 10 && <p className="text-xs text-red-500 font-medium">Only {flight.seatsLeft} seats left</p>}
                     </div>
                     <a 
-                      href="https://www.skyscanner.co.in/" 
+                      href={`https://www.skyscanner.co.in/transport/flights/${flight.fromCode.toLowerCase()}/idr/280414`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="btn-primary py-2 px-6 bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
                     >
-                      Book <ExternalLink size={14} />
+                      Book on Skyscanner <ExternalLink size={14} />
                     </a>
                   </div>
                 </div>
@@ -152,6 +173,17 @@ export default function TravelPage() {
 
           {activeTab === "trains" && (
             <motion.div key="trains" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
+              <div className="flex justify-between items-center bg-orange-50 dark:bg-orange-900/10 p-4 rounded-xl border border-orange-200 dark:border-orange-800/50">
+                <p className="text-sm text-orange-800 dark:text-orange-200">Want live availability from IRCTC CRIS API?</p>
+                <button 
+                  onClick={checkLiveIRCTC} 
+                  disabled={loadingTrain}
+                  className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                >
+                  {loadingTrain ? "Checking..." : "Test Live IRCTC API"}
+                </button>
+              </div>
+
               {trains.length > 0 ? trains.map((train, idx) => (
                 <div key={idx} className="glass-card overflow-hidden hover:border-orange-500/30 transition-colors">
                   <div className="p-5 flex flex-col md:flex-row items-center justify-between gap-6 border-b border-gray-100 dark:border-gray-800">

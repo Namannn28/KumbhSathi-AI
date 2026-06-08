@@ -1,10 +1,43 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CloudSun, Wind, Droplets, Sun as SunIcon, Sunrise, Sunset, ShieldCheck } from "lucide-react";
-import { weatherData } from "@/lib/data/services";
+import { CloudSun, Wind, Droplets, Sun as SunIcon, Sunrise, Sunset, ShieldCheck, Loader2 } from "lucide-react";
+import { weatherData as staticWeatherData } from "@/lib/data/services";
+import { useEffect, useState } from "react";
 
 export default function WeatherPage() {
+  const [weatherData, setWeatherData] = useState(staticWeatherData);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchLiveWeather() {
+      try {
+        const res = await fetch('/api/weather');
+        if (!res.ok) throw new Error("Failed to fetch");
+        const apiData = await res.json();
+        
+        if (apiData?.current) {
+          setWeatherData(prev => ({
+            ...prev,
+            temperature: Math.round(apiData.current.temperature_2m),
+            feelsLike: Math.round(apiData.current.apparent_temperature),
+            windSpeed: Math.round(apiData.current.wind_speed_10m),
+            humidity: Math.round(apiData.current.relative_humidity_2m),
+            // Basic weather code mapping
+            condition: apiData.current.weather_code <= 3 ? "Clear/Cloudy" : "Rain/Showers",
+            conditionHi: apiData.current.weather_code <= 3 ? "साफ/बादल" : "बारिश",
+            uvIndex: apiData.daily?.uv_index_max?.[0] || prev.uvIndex
+          }));
+        }
+      } catch (error) {
+        console.error("Live weather error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLiveWeather();
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -23,8 +56,9 @@ export default function WeatherPage() {
             <CloudSun className="text-sacred-500" size={32} />
             Weather & Environment
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Live updates for Prayagraj (Sangam Area)</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Live updates for Ujjain (Ram Ghat Area)</p>
         </div>
+        {loading && <div className="flex items-center gap-2 text-sacred-500"><Loader2 className="animate-spin" size={20}/> Fetching live data...</div>}
       </div>
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-3 gap-6">

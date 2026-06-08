@@ -5,7 +5,7 @@ import "@/app/globals.css";
 export const metadata: Metadata = {
   title: "KumbhSaarthi AI — Pilgrim Assistant | Mahakumbh 2028",
   description: "AI-powered multilingual digital companion for Mahakumbh 2028 pilgrims. Navigation, crowd monitoring, emergency SOS, accommodation, events & more.",
-  keywords: "Kumbh Mela, Mahakumbh 2028, Prayagraj, pilgrim assistant, AI, navigation, crowd monitor",
+  keywords: "Kumbh Mela, Mahakumbh 2028, Ujjain, pilgrim assistant, AI, navigation, crowd monitor",
   authors: [{ name: "KumbhSaarthi AI Team" }],
   icons: { icon: "/favicon.ico" },
 };
