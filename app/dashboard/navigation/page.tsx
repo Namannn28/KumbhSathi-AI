@@ -89,9 +89,14 @@ export default function NavigationPage() {
               <p className="text-xs text-gray-500 font-hindi mb-2">{loc.nameHi}</p>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-xs text-sacred-600 dark:text-sacred-400 font-medium">Sector {loc.sector}</span>
-                <button className="text-blue-500 hover:text-blue-600 text-xs font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a 
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:text-blue-600 text-xs font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
                   <NavIcon size={12} /> Navigate
-                </button>
+                </a>
               </div>
             </div>
           ))}

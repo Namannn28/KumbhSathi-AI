@@ -16,11 +16,29 @@ import { useEffect, useState } from "react";
 export default function DashboardHome() {
   const { data: session } = useSession();
   const [currentTip, setCurrentTip] = useState(0);
+  const [liveWeather, setLiveWeather] = useState(weatherData);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTip((prev) => (prev + 1) % safetyTips.length);
     }, 5000);
+
+    // Fetch live weather
+    fetch('/api/weather')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.current_weather) {
+          setLiveWeather({
+            temperature: Math.round(data.current_weather.temperature),
+            condition: data.current_weather.weathercode <= 3 ? "Clear" : "Rain/Showers",
+            icon: data.current_weather.weathercode <= 3 ? "☀️" : "🌧️",
+            aqi: 45, // Hardcoded for demo as Open-Meteo free tier doesn't include AQI
+            humidity: 60 // Hardcoded for demo
+          });
+        }
+      })
+      .catch(console.error);
+
     return () => clearInterval(timer);
   }, []);
 
@@ -143,18 +161,18 @@ export default function DashboardHome() {
             {/* Weather Widget */}
             <div className="glass-card p-6 bg-gradient-to-br from-blue-50 to-emerald-50 dark:from-blue-900/20 dark:to-emerald-900/20">
               <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
-                <CloudSun size={16} /> Ujjain Weather
+                <CloudSun size={16} /> Ujjain Live Weather
               </h2>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-4xl font-bold text-gray-900 dark:text-white">{weatherData.temperature}°C</div>
-                  <div className="text-lg text-gray-600 dark:text-gray-300">{weatherData.condition}</div>
+                  <div className="text-4xl font-bold text-gray-900 dark:text-white">{liveWeather.temperature}°C</div>
+                  <div className="text-lg text-gray-600 dark:text-gray-300">{liveWeather.condition}</div>
                 </div>
-                <div className="text-5xl">{weatherData.icon}</div>
+                <div className="text-5xl">{liveWeather.icon}</div>
               </div>
               <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>AQI: <span className="font-semibold text-orange-500">{weatherData.aqi}</span></span>
-                <span>Humidity: {weatherData.humidity}%</span>
+                <span>AQI: <span className="font-semibold text-orange-500">{liveWeather.aqi}</span></span>
+                <span>Humidity: {liveWeather.humidity}%</span>
               </div>
             </div>
 
