@@ -96,18 +96,21 @@ export default function TravelPage() {
             <label className="block text-xs font-medium text-gray-500 mb-1">From</label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <select 
+              <input 
+                list="cities"
                 value={fromCity}
                 onChange={(e) => {
                   setFromCity(e.target.value);
                   setApiTrains(null); // Reset live data when changing cities
                 }}
-                className="input-field pl-10"
-              >
+                className="input-field pl-10 w-full"
+                placeholder="Search city..."
+              />
+              <datalist id="cities">
                 {majorCities.map(city => (
                   <option key={city.code} value={city.code}>{city.name} ({city.code})</option>
                 ))}
-              </select>
+              </datalist>
             </div>
           </div>
           

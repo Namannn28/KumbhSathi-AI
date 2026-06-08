@@ -61,16 +61,20 @@ export default function ChatPage() {
       const lowerText = text.toLowerCase();
       let botResponse = chatResponses.default;
 
-      // Simple keyword matching
-      if (lowerText.includes("hello") || lowerText.includes("hi")) botResponse = chatResponses.hello;
-      else if (lowerText.includes("namaste") || lowerText.includes("नमस्ते")) botResponse = chatResponses.namaste;
-      else if (lowerText.includes("snan") || lowerText.includes("date")) botResponse = chatResponses.snan;
-      else if (lowerText.includes("crowd") || lowerText.includes("busy")) botResponse = chatResponses.crowd;
-      else if (lowerText.includes("emergency") || lowerText.includes("help") || lowerText.includes("police")) botResponse = chatResponses.emergency;
-      else if (lowerText.includes("accommodation") || lowerText.includes("stay") || lowerText.includes("hotel") || lowerText.includes("tent")) botResponse = chatResponses.accommodation;
-      else if (lowerText.includes("news") || lowerText.includes("update") || lowerText.includes("latest") || lowerText.includes("trains")) botResponse = chatResponses.news;
-      else if (lowerText.includes("airport") || lowerText.includes("flight") || lowerText.includes("transport")) botResponse = chatResponses.airport;
-      else if (lowerText.includes("budget") || lowerText.includes("cost") || lowerText.includes("crore")) botResponse = chatResponses.budget;
+      // Advanced keyword matching
+      if (/hello|hi|hey|greetings/i.test(lowerText)) botResponse = chatResponses.hello;
+      else if (/namaste|नमस्ते|pranam|ram ram/i.test(lowerText)) botResponse = chatResponses.namaste;
+      else if (/snan|date|when|schedule|calendar/i.test(lowerText)) botResponse = chatResponses.snan;
+      else if (/crowd|busy|people|rush|density/i.test(lowerText)) botResponse = chatResponses.crowd;
+      else if (/emergency|help|police|ambulance|hospital|fire|sos/i.test(lowerText)) botResponse = chatResponses.emergency;
+      else if (/accommodation|stay|hotel|tent|room|dharamshala|ashram/i.test(lowerText)) botResponse = chatResponses.accommodation;
+      else if (/news|update|latest|trains|info|development/i.test(lowerText)) botResponse = chatResponses.news;
+      else if (/airport|flight|transport|highway|road/i.test(lowerText)) botResponse = chatResponses.airport;
+      else if (/budget|cost|crore|fund|economy|money/i.test(lowerText)) botResponse = chatResponses.budget;
+      else if (/water|shipra|river|clean|bamboo/i.test(lowerText)) botResponse = chatResponses.water;
+      else if (/hub|parking|hold|traffic|ratlam|bhopal/i.test(lowerText)) botResponse = chatResponses.hubs;
+      else if (/temple|mahakaleshwar|kal bhairav|mangalnath|darshan/i.test(lowerText)) botResponse = chatResponses.temples;
+      else if (/about|what is|kumbh mela|simhastha|history/i.test(lowerText)) botResponse = chatResponses.about;
 
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),
