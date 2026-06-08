@@ -2,6 +2,9 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
+import Spline from '@splinetool/react-spline';
+import Tilt from "react-parallax-tilt";
 import { 
   MessageSquare, Navigation, Users, AlertTriangle, 
   Search, Bed, Calendar, Plane, Info, Phone 
@@ -38,53 +41,63 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-kumbh-deepBlue/80 via-kumbh-deepBlue/60 to-gray-950/90 z-10" />
-          <img 
+          <div className="absolute inset-0 bg-gradient-to-b from-kumbh-deepBlue/90 via-kumbh-deepBlue/70 to-gray-950/90 z-10" />
+          <Image 
             src="/simhastha-kumbh.jpg" 
             alt="Mahakumbh Background" 
-            className="w-full h-full object-cover"
+            fill
+            priority
+            className="object-cover"
           />
         </div>
 
-        <div className="relative z-20 container mx-auto px-4 text-center">
+        {/* Spline 3D Embed */}
+        <div className="absolute inset-0 z-10 opacity-60 mix-blend-screen pointer-events-none md:pointer-events-auto">
+          <Spline scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode" />
+        </div>
+
+        <div className="relative z-20 container mx-auto px-4 text-center pointer-events-none">
           <motion.div
             initial="hidden"
             animate="visible"
+            viewport={{ once: true }}
             variants={containerVariants}
             className="max-w-4xl mx-auto space-y-8"
           >
-            <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-bold text-white tracking-tight">
+            <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-bold text-white tracking-tight drop-shadow-2xl">
               Kumbh<span className="text-sacred-400">Saarthi</span> AI
             </motion.h1>
             
-            <motion.p variants={itemVariants} className="text-xl md:text-3xl text-gray-200 font-light">
+            <motion.p variants={itemVariants} className="text-xl md:text-3xl text-gray-200 font-light drop-shadow-lg">
               Your AI-Powered Companion for Mahakumbh 2028
             </motion.p>
             
-            <motion.p variants={itemVariants} className="text-2xl text-sacred-400 font-hindi">
+            <motion.p variants={itemVariants} className="text-2xl text-sacred-400 font-hindi drop-shadow-md">
               हर कदम में साथ | Har Kadam Mein Saath
             </motion.p>
 
-            <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-6 py-8">
-              <div className="glass-card-dark px-6 py-4 rounded-xl text-white">
-                <div className="text-3xl font-bold text-sacred-400">40 Cr+</div>
-                <div className="text-sm text-gray-300 uppercase tracking-wider">Expected Pilgrims</div>
-              </div>
-              <div className="glass-card-dark px-6 py-4 rounded-xl text-white">
-                <div className="text-3xl font-bold text-sacred-400">55</div>
-                <div className="text-sm text-gray-300 uppercase tracking-wider">Days of Festival</div>
-              </div>
-              <div className="glass-card-dark px-6 py-4 rounded-xl text-white">
-                <div className="text-3xl font-bold text-sacred-400">25+</div>
-                <div className="text-sm text-gray-300 uppercase tracking-wider">Sacred Ghats</div>
-              </div>
-              <div className="glass-card-dark px-6 py-4 rounded-xl text-white">
-                <div className="text-3xl font-bold text-sacred-400">100+</div>
-                <div className="text-sm text-gray-300 uppercase tracking-wider">Languages Supported</div>
-              </div>
+            <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-6 py-8 pointer-events-auto">
+              <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} scale={1.05}>
+                <div className="glass-card-dark px-6 py-4 rounded-xl text-white">
+                  <div className="text-3xl font-bold text-sacred-400">40 Cr+</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider">Expected Pilgrims</div>
+                </div>
+              </Tilt>
+              <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} scale={1.05}>
+                <div className="glass-card-dark px-6 py-4 rounded-xl text-white">
+                  <div className="text-3xl font-bold text-sacred-400">55</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider">Days of Festival</div>
+                </div>
+              </Tilt>
+              <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} scale={1.05}>
+                <div className="glass-card-dark px-6 py-4 rounded-xl text-white">
+                  <div className="text-3xl font-bold text-sacred-400">25+</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider">Sacred Ghats</div>
+                </div>
+              </Tilt>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-auto">
               <Link href="/auth/login" className="btn-primary text-lg px-8 py-4 w-full sm:w-auto text-center">
                 Start Your Journey
               </Link>
@@ -107,18 +120,23 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, idx) => (
-            <Link key={idx} href={feature.link}>
-              <motion.div 
-                whileHover={{ y: -5 }}
-                className="glass-card p-6 h-full border border-gray-200 dark:border-gray-800 hover:border-sacred-500/50 transition-colors group"
-              >
-                <div className="w-12 h-12 rounded-full bg-sacred-100 dark:bg-sacred-900/30 flex items-center justify-center mb-4 text-sacred-600 dark:text-sacred-400 group-hover:scale-110 transition-transform">
-                  <feature.icon size={24} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
-              </motion.div>
-            </Link>
+            <Tilt key={idx} tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02} transitionSpeed={2500}>
+              <Link href={feature.link}>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="glass-card p-6 h-full border border-gray-200 dark:border-gray-800 hover:border-sacred-500/50 transition-all group"
+                >
+                  <div className="w-12 h-12 rounded-full bg-sacred-100 dark:bg-sacred-900/30 flex items-center justify-center mb-4 text-sacred-600 dark:text-sacred-400 group-hover:scale-110 transition-transform shadow-sm">
+                    <feature.icon size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
+                </motion.div>
+              </Link>
+            </Tilt>
           ))}
         </div>
       </section>

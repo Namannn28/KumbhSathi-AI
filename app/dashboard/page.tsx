@@ -12,6 +12,7 @@ import { majorEvents } from "@/lib/data/events";
 import { weatherData } from "@/lib/data/services";
 import { safetyTips } from "@/lib/data/emergency";
 import { useEffect, useState } from "react";
+import Tilt from "react-parallax-tilt";
 
 export default function DashboardHome() {
   const { data: session } = useSession();
@@ -112,12 +113,14 @@ export default function DashboardHome() {
           <h2 className="section-title mb-4 text-xl">Quick Actions</h2>
           <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
             {quickActions.map((action, idx) => (
-              <Link key={idx} href={action.href} className="flex flex-col items-center gap-2 group">
-                <div className={`w-14 h-14 rounded-2xl ${action.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                  <action.icon size={24} />
-                </div>
-                <span className="text-xs font-medium text-center text-gray-700 dark:text-gray-300">{action.label}</span>
-              </Link>
+              <Tilt key={idx} tiltMaxAngleX={15} tiltMaxAngleY={15} scale={1.1} transitionSpeed={2000}>
+                <Link href={action.href} className="flex flex-col items-center gap-2 group">
+                  <div className={`w-14 h-14 rounded-2xl ${action.color} text-white flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all`}>
+                    <action.icon size={24} />
+                  </div>
+                  <span className="text-xs font-medium text-center text-gray-700 dark:text-gray-300">{action.label}</span>
+                </Link>
+              </Tilt>
             ))}
           </div>
         </motion.div>
