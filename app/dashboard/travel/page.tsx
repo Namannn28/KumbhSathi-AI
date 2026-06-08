@@ -75,7 +75,7 @@ export default function TravelPage() {
       </div>
 
       {/* Search Box */}
-      <div className="glass-card p-6">
+      <div className="glass-card p-6 relative z-50">
         <div className="flex border-b border-gray-200 dark:border-gray-800 mb-6">
           <button
             onClick={() => setActiveTab("flights")}

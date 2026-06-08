@@ -77,7 +77,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col md:flex-row">
+    <div className="h-screen overflow-hidden w-full bg-gray-50 dark:bg-gray-950 flex flex-col md:flex-row">
       
       {/* Mobile Top Navbar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
