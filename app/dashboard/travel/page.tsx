@@ -249,7 +249,7 @@ export default function TravelPage() {
 
                   <div className="bg-gray-50 dark:bg-gray-800/30 p-4 flex flex-wrap md:flex-nowrap items-center gap-4 justify-between">
                     <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-                      {train.classes.map((cls, cIdx) => (
+                      {train.classes.map((cls: any, cIdx: number) => (
                         <div key={cIdx} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-lg min-w-[100px]">
                           <div className="flex justify-between items-center mb-1">
                             <span className="font-bold text-gray-900 dark:text-white text-sm">{cls.name}</span>
