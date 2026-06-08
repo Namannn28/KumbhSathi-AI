@@ -3,51 +3,48 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("Received payload for IRCTC proxy:", body);
+    console.log("Received payload for Train Proxy:", body);
 
-    // The user requested to use /CRISApi/ws1/nget/availabilityFareEnquiry
-    // This proxies the request to the official IRCTC/CRIS API.
-    // Note: This requires proper authentication headers (e.g. auth tokens) 
-    // which need to be configured in your .env file or passed by the client.
-    
-    const crisApiUrl = 'https://www.irctc.co.in/CRISApi/ws1/nget/availabilityFareEnquiry';
-    console.log("Target IRCTC endpoint:", crisApiUrl);
-    
-    // We are setting up the structure. Once headers are provided, it will work.
-    /*
-    const response = await fetch(crisApiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${process.env.CRIS_API_KEY}`,
-        // 'greq': '...',
-      },
-      body: JSON.stringify(body)
-    });
+    const start = body.from || "DEL";
+    const destination = body.to || "UJN";
 
-    if (!response.ok) {
-      throw new Error(`CRIS API returned ${response.status}`);
+    // Attempt to use the provided RapidAPI endpoint
+    try {
+      const response = await fetch(
+        `https://indian-railways-train-fetcher.p.rapidapi.com/get_train_info?start=${start}&destination=${destination}`,
+        {
+          method: 'GET',
+          headers: {
+            'x-rapidapi-host': 'indian-railways-train-fetcher.p.rapidapi.com',
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY || '', 
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        return NextResponse.json({
+          status: "success",
+          source: "RapidAPI",
+          trains: data
+        });
+      }
+    } catch (e) {
+      console.error("RapidAPI fetch failed, falling back to mock", e);
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
-    */
-
-    // Since IRCTC APIs require authentication, this proxy simulates a live 
-    // fetch from a rail data provider for demo purposes.
-    // Simulating network delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-
+    // Fallback to simulated data if RapidAPI fails (e.g. no API key provided)
     return NextResponse.json({
       status: "success",
-      source: "RailAPI (Simulated)",
+      source: "RailAPI (Simulated Fallback)",
       timestamp: new Date().toISOString(),
       trains: [
         {
           trainNo: "12919",
           trainName: "MALWA EXPRESS",
-          from: body.from || "DEL",
-          to: body.to || "UJN",
+          from: start,
+          to: destination,
           departureTime: "19:15",
           arrivalTime: "08:30",
           duration: "13h 15m",
@@ -60,8 +57,8 @@ export async function POST(req: Request) {
         {
           trainNo: "12416",
           trainName: "NDLS INDB EXP",
-          from: body.from || "DEL",
-          to: body.to || "UJN",
+          from: start,
+          to: destination,
           departureTime: "22:00",
           arrivalTime: "09:05",
           duration: "11h 05m",
@@ -74,9 +71,9 @@ export async function POST(req: Request) {
     });
 
   } catch (error) {
-    console.error('CRIS API Proxy Error:', error);
+    console.error('Train API Proxy Error:', error);
     return NextResponse.json(
-      { error: 'Failed to proxy request to CRIS API' },
+      { error: 'Failed to proxy request' },
       { status: 500 }
     );
   }
