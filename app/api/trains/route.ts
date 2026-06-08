@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    console.log("Received payload for IRCTC proxy:", body);
 
     // The user requested to use /CRISApi/ws1/nget/availabilityFareEnquiry
     // This proxies the request to the official IRCTC/CRIS API.
@@ -10,6 +11,7 @@ export async function POST(req: Request) {
     // which need to be configured in your .env file or passed by the client.
     
     const crisApiUrl = 'https://www.irctc.co.in/CRISApi/ws1/nget/availabilityFareEnquiry';
+    console.log("Target IRCTC endpoint:", crisApiUrl);
     
     // We are setting up the structure. Once headers are provided, it will work.
     /*
