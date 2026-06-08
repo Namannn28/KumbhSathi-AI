@@ -68,6 +68,9 @@ export default function ChatPage() {
       else if (lowerText.includes("crowd") || lowerText.includes("busy")) botResponse = chatResponses.crowd;
       else if (lowerText.includes("emergency") || lowerText.includes("help") || lowerText.includes("police")) botResponse = chatResponses.emergency;
       else if (lowerText.includes("accommodation") || lowerText.includes("stay") || lowerText.includes("hotel") || lowerText.includes("tent")) botResponse = chatResponses.accommodation;
+      else if (lowerText.includes("news") || lowerText.includes("update") || lowerText.includes("latest") || lowerText.includes("trains")) botResponse = chatResponses.news;
+      else if (lowerText.includes("airport") || lowerText.includes("flight") || lowerText.includes("transport")) botResponse = chatResponses.airport;
+      else if (lowerText.includes("budget") || lowerText.includes("cost") || lowerText.includes("crore")) botResponse = chatResponses.budget;
 
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),

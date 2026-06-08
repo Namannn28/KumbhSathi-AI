@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plane, Train, ArrowRight, ArrowRightLeft, CalendarDays, ExternalLink, MapPin } from "lucide-react";
 import { majorCities, popularFlights, popularTrains } from "@/lib/data/travel";
@@ -14,10 +14,10 @@ export default function TravelPage() {
   const flights = popularFlights.filter(f => f.fromCode === fromCity);
   const trains = apiTrains || popularTrains.filter(t => t.fromCode === fromCity);
 
-  const checkLiveIRCTC = async () => {
+  const fetchCrisApi = async () => {
     setLoadingTrain(true);
     try {
-      const res = await fetch('/api/trains', {
+      const res = await fetch('/api/cris-trains', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ from: fromCity, to: 'UJN', date: '2028-04-14' })
@@ -42,15 +42,22 @@ export default function TravelPage() {
         }));
         setApiTrains(formattedTrains);
       } else {
-        alert("No trains found from API.");
+        setApiTrains(null);
       }
     } catch (error) {
       console.error(error);
-      alert("Failed to connect to IRCTC proxy API");
+      setApiTrains(null);
     } finally {
       setLoadingTrain(false);
     }
   };
+
+  // Fetch trains automatically when the trains tab is active
+  useEffect(() => {
+    if (activeTab === "trains" && !apiTrains) {
+      fetchCrisApi();
+    }
+  }, [activeTab, fromCity]);
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 pb-24 md:pb-8">
@@ -200,11 +207,11 @@ export default function TravelPage() {
                   {apiTrains ? "Showing Live Data from RailAPI" : "Want live availability from IRCTC CRIS API?"}
                 </p>
                 <button 
-                  onClick={checkLiveIRCTC} 
+                  onClick={fetchCrisApi} 
                   disabled={loadingTrain}
                   className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
                 >
-                  {loadingTrain ? "Checking..." : "Test Live IRCTC API"}
+                  {loadingTrain ? "Checking..." : "Refresh Train Availability"}
                 </button>
               </div>
 
