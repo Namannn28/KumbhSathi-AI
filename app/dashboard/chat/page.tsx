@@ -126,7 +126,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-950">
+    <div className="flex flex-col h-full w-full bg-white dark:bg-gray-950">
       {/* Header */}
       <div className="glass-card rounded-none border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between sticky top-0 z-10 shrink-0">
         <div className="flex items-center gap-3">

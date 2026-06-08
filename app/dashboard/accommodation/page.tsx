@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bed, Map as MapIcon, Star, MapPin, Check, Search, CalendarDays, Users, Phone, Info } from "lucide-react";
+import { Bed, Map as MapIcon, Star, MapPin, Check, Search, CalendarDays, Users, Phone, Info, X } from "lucide-react";
 import { accommodations } from "@/lib/data/accommodations";
 
 export default function AccommodationPage() {
@@ -209,6 +209,12 @@ export default function AccommodationPage() {
               className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]"
             >
               <div className="h-40 relative">
+                <button 
+                  onClick={() => setSelectedAcc(null)}
+                  className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors backdrop-blur-sm"
+                >
+                  <X size={18} />
+                </button>
                 <img src={selectedAcc.image} alt={selectedAcc.name} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 text-white">
