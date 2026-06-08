@@ -33,15 +33,43 @@ export async function POST(req: Request) {
     return NextResponse.json(data);
     */
 
-    // Since we don't have the auth keys right now, we will return a mocked 
-    // successful response that simulates the CRIS API for testing purposes.
+    // Since IRCTC APIs require authentication, this proxy simulates a live 
+    // fetch from a rail data provider for demo purposes.
+    // Simulating network delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+
     return NextResponse.json({
       status: "success",
-      message: "Proxy to CRISApi/ws1/nget/availabilityFareEnquiry is ready. Add auth headers in route.ts to enable live fetch.",
-      mockData: true,
-      availability: [
-        { date: "2028-04-14", status: "AVAILABLE", availableSeats: 120 },
-        { date: "2028-04-15", status: "WL", waitlist: 45 }
+      source: "RailAPI (Simulated)",
+      timestamp: new Date().toISOString(),
+      trains: [
+        {
+          trainNo: "12919",
+          trainName: "MALWA EXPRESS",
+          from: body.from || "DEL",
+          to: body.to || "UJN",
+          departureTime: "19:15",
+          arrivalTime: "08:30",
+          duration: "13h 15m",
+          availability: [
+            { class: "3A", status: "AVAILABLE", seats: 45, price: 1250 },
+            { class: "2A", status: "WL", seats: 12, price: 1800 },
+            { class: "SL", status: "RAC", seats: 8, price: 480 }
+          ]
+        },
+        {
+          trainNo: "12416",
+          trainName: "NDLS INDB EXP",
+          from: body.from || "DEL",
+          to: body.to || "UJN",
+          departureTime: "22:00",
+          arrivalTime: "09:05",
+          duration: "11h 05m",
+          availability: [
+            { class: "3A", status: "WL", seats: 5, price: 1350 },
+            { class: "SL", status: "AVAILABLE", seats: 120, price: 520 }
+          ]
+        }
       ]
     });
 

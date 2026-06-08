@@ -68,12 +68,10 @@ export default function LoginPage() {
         <img 
           src="/simhastha-kumbh.jpg" 
           alt="Kumbh Background" 
-          className="absolute inset-0 w-full h-full object-cover md:hidden opacity-30 z-[-1]"
+          className="absolute inset-0 w-full h-full object-cover md:hidden opacity-30 z-0"
         />
         
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div 
           className="w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 relative z-10"
         >
           {/* Auth Toggle */}
@@ -154,7 +152,7 @@ export default function LoginPage() {
               Register here
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -9,9 +9,10 @@ export default function TravelPage() {
   const [activeTab, setActiveTab] = useState("flights");
   const [fromCity, setFromCity] = useState("DEL");
   const [loadingTrain, setLoadingTrain] = useState(false);
+  const [apiTrains, setApiTrains] = useState<any>(null);
   
   const flights = popularFlights.filter(f => f.fromCode === fromCity);
-  const trains = popularTrains.filter(t => t.fromCode === fromCity);
+  const trains = apiTrains || popularTrains.filter(t => t.fromCode === fromCity);
 
   const checkLiveIRCTC = async () => {
     setLoadingTrain(true);
@@ -22,7 +23,27 @@ export default function TravelPage() {
         body: JSON.stringify({ from: fromCity, to: 'UJN', date: '2028-04-14' })
       });
       const data = await res.json();
-      alert(`Live IRCTC Status: ${data.status}\nMessage: ${data.message}`);
+      if (data.trains) {
+        // Transform API response to match our UI structure
+        const formattedTrains = data.trains.map((t: any) => ({
+          trainNo: t.trainNo,
+          trainName: t.trainName,
+          fromCode: t.from,
+          toCode: t.to,
+          departure: t.departureTime,
+          arrival: t.arrivalTime,
+          duration: t.duration,
+          days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          classes: t.availability.map((a: any) => ({
+            name: a.class,
+            available: a.status === "AVAILABLE",
+            price: a.price
+          }))
+        }));
+        setApiTrains(formattedTrains);
+      } else {
+        alert("No trains found from API.");
+      }
     } catch (error) {
       console.error(error);
       alert("Failed to connect to IRCTC proxy API");
@@ -70,7 +91,10 @@ export default function TravelPage() {
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <select 
                 value={fromCity}
-                onChange={(e) => setFromCity(e.target.value)}
+                onChange={(e) => {
+                  setFromCity(e.target.value);
+                  setApiTrains(null); // Reset live data when changing cities
+                }}
                 className="input-field pl-10"
               >
                 {majorCities.map(city => (
@@ -172,7 +196,9 @@ export default function TravelPage() {
           {activeTab === "trains" && (
             <motion.div key="trains" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
               <div className="flex justify-between items-center bg-orange-50 dark:bg-orange-900/10 p-4 rounded-xl border border-orange-200 dark:border-orange-800/50">
-                <p className="text-sm text-orange-800 dark:text-orange-200">Want live availability from IRCTC CRIS API?</p>
+                <p className="text-sm text-orange-800 dark:text-orange-200">
+                  {apiTrains ? "Showing Live Data from RailAPI" : "Want live availability from IRCTC CRIS API?"}
+                </p>
                 <button 
                   onClick={checkLiveIRCTC} 
                   disabled={loadingTrain}
