@@ -15,7 +15,6 @@ export const authOptions: NextAuthOptions = {
 
         const phone = credentials.phone;
         const otp = credentials.otp;
-        const name = credentials.name || "Pilgrim";
 
         // Validate phone format
         if (!/^\d{10}$/.test(phone)) return null;

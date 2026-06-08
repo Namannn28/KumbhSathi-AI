@@ -90,8 +90,8 @@ export default function LoginPage() {
           <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl flex gap-3 text-blue-700 dark:text-blue-400">
             <Info className="shrink-0 mt-0.5" size={20} />
             <div className="text-sm">
-              <strong>Demo Login:</strong><br />
-              Any 10-digit phone number<br />
+              <strong>Demo Login (Registered User):</strong><br />
+              Phone: <strong>9876543210</strong><br />
               OTP: <strong>123456</strong>
             </div>
           </div>
