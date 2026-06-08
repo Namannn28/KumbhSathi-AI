@@ -35,10 +35,15 @@ export const authOptions: NextAuthOptions = {
           return { ...existingUser, phone, email: `${phone}@kumbh.demo` };
         }
 
-        // New user auto-registration
+        // If they are logging in (no name provided), block them.
+        if (!credentials.name) {
+          throw new Error("Phone number not registered. Please sign up first.");
+        }
+
+        // New user auto-registration (Signup flow)
         return {
           id: `user-${Date.now()}`,
-          name,
+          name: credentials.name,
           phone,
           email: `${phone}@kumbh.demo`,
           role: "PILGRIM",

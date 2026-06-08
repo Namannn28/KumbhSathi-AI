@@ -9,15 +9,28 @@ export default function LostFoundPage() {
   const [showReportForm, setShowReportForm] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
 
-  const mockCases = [
+  const [cases, setCases] = useState([
     { id: "LF-101", name: "Ramesh Kumar", age: 65, gender: "Male", location: "Sector A1, near Sangam", time: "2 hours ago", status: "searching", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop" },
     { id: "LF-102", name: "Aarohi (Child)", age: 8, gender: "Female", location: "Gate 3 Entrance", time: "30 mins ago", status: "searching", image: "https://images.unsplash.com/photo-1514315384763-ba401779410f?w=200&h=200&fit=crop" },
     { id: "LF-103", name: "Sunita Devi", age: 58, gender: "Female", location: "Sector B1, Tent City", time: "4 hours ago", status: "found", location_now: "Central Police Station" },
     { id: "LF-104", name: "Blue Backpack", age: null, gender: "Item", location: "Annapurna Langar", time: "1 hour ago", status: "searching", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop" },
-  ];
+  ]);
 
-  const handleReportSubmit = (e: React.FormEvent) => {
+  const handleReportSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newCase = {
+      id: `LF-${105 + cases.length}`,
+      name: formData.get('name') as string,
+      age: Number(formData.get('age')),
+      gender: formData.get('gender') as string,
+      location: formData.get('location') as string,
+      time: "Just now",
+      status: "searching",
+      image: ""
+    };
+    
+    setCases([newCase, ...cases]);
     setReportSuccess(true);
     setTimeout(() => {
       setShowReportForm(false);
@@ -90,7 +103,7 @@ export default function LostFoundPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockCases.map((c) => (
+              {cases.map((c) => (
                 <div key={c.id} className="glass-card overflow-hidden flex flex-col group">
                   <div className="h-48 bg-gray-200 dark:bg-gray-800 relative flex items-center justify-center">
                     {c.image ? (
@@ -194,20 +207,20 @@ export default function LostFoundPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name *</label>
-                    <input type="text" required className="input-field" placeholder="Name of missing person" />
+                    <input name="name" type="text" required className="input-field" placeholder="Name of missing person" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Age *</label>
-                      <input type="number" required className="input-field" placeholder="Years" />
+                      <input name="age" type="number" required className="input-field" placeholder="Years" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gender *</label>
-                      <select required className="input-field">
+                      <select name="gender" required className="input-field">
                         <option value="">Select...</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
                       </select>
                     </div>
                   </div>
@@ -215,12 +228,12 @@ export default function LostFoundPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Seen Location *</label>
-                  <select required className="input-field">
+                  <select name="location" required className="input-field">
                     <option value="">Select sector or area...</option>
-                    <option value="A1">Sector A1 - Sangam Zone</option>
-                    <option value="A2">Sector A2 - Dashashwamedh Area</option>
-                    <option value="B1">Sector B1 - Arail</option>
-                    <option value="C1">Sector C1 - Parking & Gates</option>
+                    <option value="Sector A1 - Sangam Zone">Sector A1 - Sangam Zone</option>
+                    <option value="Sector A2 - Dashashwamedh Area">Sector A2 - Dashashwamedh Area</option>
+                    <option value="Sector B1 - Arail">Sector B1 - Arail</option>
+                    <option value="Sector C1 - Parking & Gates">Sector C1 - Parking & Gates</option>
                   </select>
                 </div>
 

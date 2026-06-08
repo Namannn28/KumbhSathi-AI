@@ -59,9 +59,9 @@ export default function SignupPage() {
       <div className="hidden md:flex md:w-1/2 sacred-gradient text-white flex-col justify-between p-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <img 
-            src="https://images.unsplash.com/photo-1609947017136-9dfe24ca77b0?w=800" 
+            src="/simhastha-kumbh.jpg" 
             alt="Kumbh Mela" 
-            className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30"
+            className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50"
           />
         <div className="relative z-10">
           <Link href="/" className="text-4xl font-bold tracking-tight inline-block hover:scale-105 transition-transform">
@@ -78,13 +78,25 @@ export default function SignupPage() {
 
       {/* Right side - Signup Form */}
       <div className="flex-1 flex items-center justify-center p-6 sm:p-12 relative overflow-y-auto">
-        <div className="absolute inset-0 sacred-gradient md:hidden opacity-10"></div>
+        {/* Mobile background image overlay */}
+        <div className="absolute inset-0 md:hidden bg-black/60 z-0"></div>
+        <img 
+          src="/simhastha-kumbh.jpg" 
+          alt="Kumbh Background" 
+          className="absolute inset-0 w-full h-full object-cover md:hidden opacity-30 z-[-1]"
+        />
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 relative z-10 my-8"
         >
+          {/* Auth Toggle */}
+          <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 mb-8">
+            <Link href="/auth/login" className="flex-1 text-center py-2 rounded-md text-gray-500 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">Login</Link>
+            <Link href="/auth/signup" className="flex-1 text-center py-2 rounded-md bg-white dark:bg-gray-900 shadow-sm font-semibold text-sacred-600 dark:text-sacred-400">Sign Up</Link>
+          </div>
+
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
             <p className="text-gray-500 dark:text-gray-400">Join thousands of pilgrims using KumbhSaarthi</p>

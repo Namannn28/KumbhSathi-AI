@@ -16,17 +16,14 @@ export default function WeatherPage() {
         if (!res.ok) throw new Error("Failed to fetch");
         const apiData = await res.json();
         
-        if (apiData?.current) {
+        if (apiData?.current_weather) {
           setWeatherData(prev => ({
             ...prev,
-            temperature: Math.round(apiData.current.temperature_2m),
-            feelsLike: Math.round(apiData.current.apparent_temperature),
-            windSpeed: Math.round(apiData.current.wind_speed_10m),
-            humidity: Math.round(apiData.current.relative_humidity_2m),
+            temperature: Math.round(apiData.current_weather.temperature),
+            windSpeed: Math.round(apiData.current_weather.windspeed),
             // Basic weather code mapping
-            condition: apiData.current.weather_code <= 3 ? "Clear/Cloudy" : "Rain/Showers",
-            conditionHi: apiData.current.weather_code <= 3 ? "साफ/बादल" : "बारिश",
-            uvIndex: apiData.daily?.uv_index_max?.[0] || prev.uvIndex
+            condition: apiData.current_weather.weathercode <= 3 ? "Clear/Cloudy" : "Rain/Showers",
+            conditionHi: apiData.current_weather.weathercode <= 3 ? "साफ/बादल" : "बारिश",
           }));
         }
       } catch (error) {

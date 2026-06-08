@@ -29,7 +29,7 @@ export default function MapComponent({ filteredLocations }: { filteredLocations:
   return (
     <MapContainer 
       id="map-container"
-      center={[25.4270, 81.8847]} 
+      center={[23.1765, 75.7885]} 
       zoom={14} 
       className="w-full h-full z-10"
       zoomControl={false}
@@ -45,9 +45,14 @@ export default function MapComponent({ filteredLocations }: { filteredLocations:
               <h3 className="font-bold text-gray-900 mb-1">{loc.name}</h3>
               <p className="text-xs text-gray-600 font-hindi mb-2">{loc.nameHi}</p>
               <p className="text-xs text-gray-500 mb-3 line-clamp-2">{loc.description}</p>
-              <button className="w-full bg-sacred-500 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-sacred-600 transition-colors">
+              <a 
+                href={`https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center w-full bg-sacred-500 text-white py-1.5 rounded-lg text-xs font-medium hover:bg-sacred-600 transition-colors"
+              >
                 Get Directions
-              </button>
+              </a>
             </div>
           </Popup>
         </Marker>
