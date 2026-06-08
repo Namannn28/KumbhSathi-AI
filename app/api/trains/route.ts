@@ -16,7 +16,6 @@ export async function POST(req: Request) {
           method: 'GET',
           headers: {
             'x-rapidapi-host': 'indian-railways-train-fetcher.p.rapidapi.com',
-            'x-rapidapi-key': process.env.RAPIDAPI_KEY || '', 
             'Content-Type': 'application/json'
           }
         }

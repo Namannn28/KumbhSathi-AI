@@ -208,7 +208,7 @@ export default function TravelPage() {
                 </button>
               </div>
 
-              {trains.length > 0 ? trains.map((train, idx) => (
+              {trains.length > 0 ? trains.map((train: any, idx: number) => (
                 <div key={idx} className="glass-card overflow-hidden hover:border-orange-500/30 transition-colors">
                   <div className="p-5 flex flex-col md:flex-row items-center justify-between gap-6 border-b border-gray-100 dark:border-gray-800">
                     <div className="flex items-center gap-4 w-full md:w-auto">
