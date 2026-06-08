@@ -40,7 +40,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-kumbh-deepBlue/80 via-kumbh-deepBlue/60 to-gray-950/90 z-10" />
           <img 
-            src="https://images.unsplash.com/photo-1609947017136-9dfe24ca77b0?w=1200" 
+            src="/simhastha-kumbh.jpg" 
             alt="Mahakumbh Background" 
             className="w-full h-full object-cover"
           />
