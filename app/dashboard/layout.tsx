@@ -68,6 +68,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!session) return null;
 
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+
+  const filteredLinks = sidebarLinks.filter(link => 
+    link.name.toLowerCase().includes(globalSearch.toLowerCase()) || 
+    link.href.toLowerCase().includes(globalSearch.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col md:flex-row">
       
@@ -152,9 +160,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input 
               type="text" 
+              value={globalSearch}
+              onChange={(e) => {
+                setGlobalSearch(e.target.value);
+                setShowSearchDropdown(true);
+              }}
+              onFocus={() => setShowSearchDropdown(true)}
+              onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
               placeholder="Search features..." 
               className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border-none rounded-full text-sm focus:ring-2 focus:ring-sacred-500 outline-none dark:text-white"
             />
+            {showSearchDropdown && globalSearch && (
+              <div className="absolute top-full mt-2 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-xl overflow-hidden z-50">
+                {filteredLinks.length > 0 ? filteredLinks.map(link => (
+                  <button
+                    key={link.name}
+                    onClick={() => {
+                      router.push(link.href);
+                      setGlobalSearch("");
+                      setShowSearchDropdown(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-left transition-colors"
+                  >
+                    <link.icon size={16} className="text-sacred-500" />
+                    <span className="text-gray-900 dark:text-white">{link.name}</span>
+                  </button>
+                )) : (
+                  <div className="px-4 py-3 text-sm text-gray-500">No features found.</div>
+                )}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <button onClick={toggleDarkMode} className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">

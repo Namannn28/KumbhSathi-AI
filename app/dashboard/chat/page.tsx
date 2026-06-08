@@ -61,20 +61,42 @@ export default function ChatPage() {
       const lowerText = text.toLowerCase();
       let botResponse = chatResponses.default;
 
-      // Advanced keyword matching
-      if (/hello|hi|hey|greetings/i.test(lowerText)) botResponse = chatResponses.hello;
-      else if (/namaste|नमस्ते|pranam|ram ram/i.test(lowerText)) botResponse = chatResponses.namaste;
-      else if (/snan|date|when|schedule|calendar/i.test(lowerText)) botResponse = chatResponses.snan;
-      else if (/crowd|busy|people|rush|density/i.test(lowerText)) botResponse = chatResponses.crowd;
-      else if (/emergency|help|police|ambulance|hospital|fire|sos/i.test(lowerText)) botResponse = chatResponses.emergency;
-      else if (/accommodation|stay|hotel|tent|room|dharamshala|ashram/i.test(lowerText)) botResponse = chatResponses.accommodation;
-      else if (/news|update|latest|trains|info|development/i.test(lowerText)) botResponse = chatResponses.news;
-      else if (/airport|flight|transport|highway|road/i.test(lowerText)) botResponse = chatResponses.airport;
-      else if (/budget|cost|crore|fund|economy|money/i.test(lowerText)) botResponse = chatResponses.budget;
-      else if (/water|shipra|river|clean|bamboo/i.test(lowerText)) botResponse = chatResponses.water;
-      else if (/hub|parking|hold|traffic|ratlam|bhopal/i.test(lowerText)) botResponse = chatResponses.hubs;
-      else if (/temple|mahakaleshwar|kal bhairav|mangalnath|darshan/i.test(lowerText)) botResponse = chatResponses.temples;
-      else if (/about|what is|kumbh mela|simhastha|history/i.test(lowerText)) botResponse = chatResponses.about;
+      // Advanced fuzzy-scoring intent engine
+      const intents = [
+        { key: 'hello', keywords: ['hello', 'hi', 'hey', 'greetings', 'morning', 'evening', 'start'], response: chatResponses.hello },
+        { key: 'namaste', keywords: ['namaste', 'नमस्ते', 'pranam', 'ram', 'radhe', 'jai', 'shree'], response: chatResponses.namaste },
+        { key: 'snan', keywords: ['snan', 'date', 'when', 'schedule', 'calendar', 'shahi', 'time', 'bath', 'auspicious'], response: chatResponses.snan },
+        { key: 'crowd', keywords: ['crowd', 'busy', 'people', 'rush', 'density', 'full', 'empty', 'status', 'live'], response: chatResponses.crowd },
+        { key: 'emergency', keywords: ['emergency', 'help', 'police', 'ambulance', 'hospital', 'fire', 'sos', 'lost', 'danger', 'medical', 'doctor'], response: chatResponses.emergency },
+        { key: 'accommodation', keywords: ['accommodation', 'stay', 'hotel', 'tent', 'room', 'dharamshala', 'ashram', 'book', 'sleep', 'night'], response: chatResponses.accommodation },
+        { key: 'news', keywords: ['news', 'update', 'latest', 'info', 'development', 'today', 'breaking'], response: chatResponses.news },
+        { key: 'airport', keywords: ['airport', 'flight', 'transport', 'highway', 'road', 'bus', 'train', 'reach', 'travel', 'station', 'indore', 'bhopal'], response: chatResponses.airport },
+        { key: 'budget', keywords: ['budget', 'cost', 'crore', 'fund', 'economy', 'money', 'spend', 'investment', 'finance'], response: chatResponses.budget },
+        { key: 'water', keywords: ['water', 'shipra', 'river', 'clean', 'bamboo', 'sewarkhedi', 'silarkhedi', 'purify', 'pollution'], response: chatResponses.water },
+        { key: 'hubs', keywords: ['hub', 'parking', 'hold', 'traffic', 'ratlam', 'satellite', 'town', 'crowd management'], response: chatResponses.hubs },
+        { key: 'temples', keywords: ['temple', 'mahakaleshwar', 'kal bhairav', 'mangalnath', 'darshan', 'bond', 'bhasma', 'aarti', 'pooja', 'god'], response: chatResponses.temples },
+        { key: 'about', keywords: ['about', 'what', 'kumbh', 'simhastha', 'history', 'meaning', 'why', 'ujjain', 'significance'], response: chatResponses.about }
+      ];
+
+      const tokens = lowerText.split(/\W+/);
+      let bestMatch = chatResponses.default;
+      let maxScore = 0;
+
+      intents.forEach(intent => {
+        let score = 0;
+        intent.keywords.forEach(kw => {
+          if (lowerText.includes(kw)) score += 2; // Exact word match is strong
+          tokens.forEach(token => {
+            if (token.length > 3 && kw.includes(token)) score += 1; // Partial match
+          });
+        });
+        if (score > maxScore) {
+          maxScore = score;
+          bestMatch = intent.response;
+        }
+      });
+
+      if (maxScore > 0) botResponse = bestMatch;
 
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),
@@ -104,9 +126,9 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] md:h-screen bg-white dark:bg-gray-950">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-950">
       {/* Header */}
-      <div className="glass-card rounded-none border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between sticky top-0 z-10">
+      <div className="glass-card rounded-none border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between sticky top-0 z-10 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-sacred-100 dark:bg-sacred-900/30 text-sacred-600 flex items-center justify-center">
             <Bot size={24} />
@@ -124,47 +146,49 @@ export default function ChatPage() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {messages.map((msg) => (
-          <motion.div
-            key={msg.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`flex flex-col max-w-[85%] ${msg.isBot ? "self-start items-start" : "self-end items-end ml-auto"}`}
-          >
-            <div className={`flex items-end gap-2 ${msg.isBot ? "flex-row" : "flex-row-reverse"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                msg.isBot ? "bg-sacred-100 text-sacred-600" : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-              }`}>
-                {msg.isBot ? <Bot size={16} /> : <UserIcon size={16} />}
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+        <div className="w-full max-w-4xl space-y-6 flex flex-col">
+          {messages.map((msg) => (
+            <motion.div
+              key={msg.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex flex-col max-w-[85%] md:max-w-[75%] ${msg.isBot ? "self-start items-start" : "self-end items-end ml-auto"}`}
+            >
+              <div className={`flex items-end gap-2 ${msg.isBot ? "flex-row" : "flex-row-reverse"}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                  msg.isBot ? "bg-sacred-100 text-sacred-600" : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                }`}>
+                  {msg.isBot ? <Bot size={16} /> : <UserIcon size={16} />}
+                </div>
+                <div className={`px-4 py-3 rounded-2xl ${
+                  msg.isBot 
+                    ? "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-sm" 
+                    : "sacred-gradient text-white rounded-br-sm shadow-md"
+                }`}>
+                  <p className="text-sm md:text-base leading-relaxed">{formatText(msg.text)}</p>
+                </div>
               </div>
-              <div className={`px-4 py-3 rounded-2xl ${
-                msg.isBot 
-                  ? "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-sm" 
-                  : "sacred-gradient text-white rounded-br-sm shadow-md"
-              }`}>
-                <p className="text-sm md:text-base leading-relaxed">{formatText(msg.text)}</p>
-              </div>
-            </div>
-            <span className="text-[10px] text-gray-400 mt-1 mx-10">
-              {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          </motion.div>
-        ))}
+              <span className="text-[10px] text-gray-400 mt-1 mx-10">
+                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </motion.div>
+          ))}
 
-        {isTyping && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-end gap-2 max-w-[85%]">
-            <div className="w-8 h-8 rounded-full bg-sacred-100 text-sacred-600 flex items-center justify-center shrink-0">
-              <Bot size={16} />
-            </div>
-            <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1">
-              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></span>
-              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></span>
-            </div>
-          </motion.div>
-        )}
-        <div ref={messagesEndRef} />
+          {isTyping && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-end gap-2 max-w-[85%] md:max-w-[75%]">
+              <div className="w-8 h-8 rounded-full bg-sacred-100 text-sacred-600 flex items-center justify-center shrink-0">
+                <Bot size={16} />
+              </div>
+              <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1">
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></span>
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></span>
+              </div>
+            </motion.div>
+          )}
+          <div ref={messagesEndRef} className="h-4" />
+        </div>
       </div>
 
       {/* Input Area */}

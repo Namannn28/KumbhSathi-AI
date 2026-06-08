@@ -52,6 +52,10 @@ export default function TravelPage() {
     }
   };
 
+  const [searchQuery, setSearchQuery] = useState("Delhi (DEL)");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const filteredCities = majorCities.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.code.toLowerCase().includes(searchQuery.toLowerCase()));
+
   // Fetch trains automatically when the trains tab is active
   useEffect(() => {
     if (activeTab === "trains" && !apiTrains) {
@@ -97,20 +101,45 @@ export default function TravelPage() {
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input 
-                list="cities"
-                value={fromCity}
+                type="text"
+                value={searchQuery}
+                onFocus={() => setShowDropdown(true)}
                 onChange={(e) => {
-                  setFromCity(e.target.value);
-                  setApiTrains(null); // Reset live data when changing cities
+                  setSearchQuery(e.target.value);
+                  setShowDropdown(true);
                 }}
+                onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                 className="input-field pl-10 w-full"
-                placeholder="Search city..."
+                placeholder="Type to search city..."
               />
-              <datalist id="cities">
-                {majorCities.map(city => (
-                  <option key={city.code} value={city.code}>{city.name} ({city.code})</option>
-                ))}
-              </datalist>
+              <AnimatePresence>
+                {showDropdown && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 5 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto"
+                  >
+                    {filteredCities.length > 0 ? filteredCities.map(city => (
+                      <button
+                        key={city.code}
+                        onClick={() => {
+                          setFromCity(city.code);
+                          setSearchQuery(`${city.name} (${city.code})`);
+                          setApiTrains(null);
+                          setShowDropdown(false);
+                        }}
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-900 dark:text-gray-100 transition-colors border-b border-gray-100 dark:border-gray-800 last:border-0"
+                      >
+                        <span className="font-medium">{city.name}</span> 
+                        <span className="text-gray-400 text-xs ml-2 uppercase tracking-wider">{city.code}</span>
+                      </button>
+                    )) : (
+                      <div className="p-4 text-sm text-gray-500 text-center">No cities found.</div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
           

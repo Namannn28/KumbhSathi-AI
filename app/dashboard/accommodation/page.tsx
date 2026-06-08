@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bed, Map as MapIcon, Star, MapPin, Check, Search, CalendarDays, Users, Phone, Info } from "lucide-react";
 import { accommodations } from "@/lib/data/accommodations";
@@ -9,6 +9,8 @@ export default function AccommodationPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [showMap, setShowMap] = useState(false);
   const [selectedAcc, setSelectedAcc] = useState<any>(null);
+  const [liveHotels, setLiveHotels] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const tabs = [
     { id: "all", label: "All Stays" },
@@ -18,9 +20,38 @@ export default function AccommodationPage() {
     { id: "ashram", label: "Ashrams" },
   ];
 
+  useEffect(() => {
+    const fetchHotels = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/hotels', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: activeTab === 'all' ? '' : activeTab })
+        });
+        const data = await res.json();
+        setLiveHotels(data.hotels || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (activeTab === 'hotel' || activeTab === 'all') {
+      fetchHotels();
+    }
+  }, [activeTab]);
+
+  const mappedLiveHotels = liveHotels.map(h => ({
+    id: h.id, type: 'hotel', name: h.name, nameHi: '', rating: h.rating, distance: h.distance, description: h.type,
+    amenities: h.amenities, priceLabel: `₹${h.price}/night`, available: h.availableRooms > 0, sector: 'Ujjain Center', image: h.image
+  }));
+
   const filteredAccs = activeTab === "all" 
-    ? accommodations 
-    : accommodations.filter(a => a.type === activeTab);
+    ? [...accommodations.filter(a => a.type !== 'hotel'), ...mappedLiveHotels]
+    : activeTab === "hotel"
+      ? mappedLiveHotels
+      : accommodations.filter(a => a.type === activeTab);
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 pb-24 md:pb-8">
@@ -69,7 +100,12 @@ export default function AccommodationPage() {
       </div>
 
       {/* Content */}
-      {showMap ? (
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sacred-500 mb-4"></div>
+          <p className="text-gray-500 dark:text-gray-400">Finding the best accommodations...</p>
+        </div>
+      ) : showMap ? (
         <div className="h-[600px] bg-gray-200 dark:bg-gray-800 rounded-2xl relative overflow-hidden flex flex-col items-center justify-center border border-gray-200 dark:border-gray-700">
           <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800')] mix-blend-luminosity object-cover"></div>
           <MapIcon size={48} className="text-gray-400 mb-4 z-10" />
@@ -127,7 +163,7 @@ export default function AccommodationPage() {
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">{acc.description}</p>
 
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                  {acc.amenities.slice(0, 3).map((amenity, idx) => (
+                  {acc.amenities.slice(0, 3).map((amenity: string, idx: number) => (
                     <span key={idx} className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs px-2 py-1 rounded-md">
                       {amenity}
                     </span>
