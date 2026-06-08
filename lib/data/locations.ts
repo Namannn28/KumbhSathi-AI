@@ -15,14 +15,12 @@ export interface Location {
 
 export const locations: Location[] = [
   // Ghats
-  { id: "l1", name: "Sangam Ghat", nameHi: "संगम घाट", type: "ghat", lat: 25.4270, lng: 81.8847, sector: "A1", description: "Sacred confluence of Ganga, Yamuna & Saraswati", descriptionHi: "गंगा, यमुना और सरस्वती का पवित्र संगम", isOpen: true, rating: 5 },
-  { id: "l2", name: "Dashashwamedh Ghat", nameHi: "दशाश्वमेध घाट", type: "ghat", lat: 25.4358, lng: 81.8893, sector: "A2", description: "Famous for daily Ganga Aarti ceremony", descriptionHi: "दैनिक गंगा आरती के लिए प्रसिद्ध", isOpen: true, rating: 4.8 },
-  { id: "l3", name: "Arail Ghat", nameHi: "अरैल घाट", type: "ghat", lat: 25.4200, lng: 81.8900, sector: "B1", description: "Peaceful bathing ghat across the river", descriptionHi: "नदी के पार शांत स्नान घाट", isOpen: true, rating: 4.2 },
-  { id: "l4", name: "Saraswati Ghat", nameHi: "सरस्वती घाट", type: "ghat", lat: 25.4300, lng: 81.8800, sector: "A1", description: "Near the mythical Saraswati river confluence", descriptionHi: "पौराणिक सरस्वती नदी संगम के पास", isOpen: true, rating: 4.5 },
-  { id: "l5", name: "Ram Ghat", nameHi: "राम घाट", type: "ghat", lat: 25.4350, lng: 81.8750, sector: "A3", description: "Historic ghat associated with Lord Ram", descriptionHi: "भगवान राम से जुड़ा ऐतिहासिक घाट", isOpen: true, rating: 4.3 },
-
-  // Temples
-  { id: "l6", name: "Hanuman Mandir", nameHi: "हनुमान मंदिर", type: "temple", lat: 25.4290, lng: 81.8870, sector: "A1", description: "Ancient Hanuman temple near Sangam", descriptionHi: "संगम के पास प्राचीन हनुमान मंदिर", isOpen: true, rating: 4.7 },
+  { id: "l1", name: "Ram Ghat", nameHi: "राम घाट", type: "ghat", lat: 23.1765, lng: 75.7885, sector: "A1", description: "Sacred bathing ghat on the Kshipra River", descriptionHi: "क्षिप्रा नदी पर पवित्र स्नान घाट", isOpen: true, rating: 5 },
+  { id: "l2", name: "Mahakaleshwar Temple", nameHi: "महाकालेश्वर मंदिर", type: "temple", lat: 23.1827, lng: 75.7682, sector: "A2", description: "One of the 12 Jyotirlingas, ancient Shiva temple", descriptionHi: "12 ज्योतिर्लिंगों में से एक, प्राचीन शिव मंदिर", isOpen: true, rating: 4.9 },
+  { id: "l3", name: "Harsiddhi Temple", nameHi: "हरसिद्धि मंदिर", type: "temple", lat: 23.1812, lng: 75.7665, sector: "A2", description: "One of the 51 Shakti Peethas", descriptionHi: "51 शक्तिपीठों में से एक", isOpen: true, rating: 4.8 },
+  { id: "l4", name: "Sector A1 Medical Camp", nameHi: "सेक्टर A1 चिकित्सा शिविर", type: "medical", lat: 23.1750, lng: 75.7850, sector: "A1", description: "24/7 emergency medical facility with ambulance", descriptionHi: "एम्बुलेंस के साथ 24/7 आपातकालीन चिकित्सा सुविधा", isOpen: true, rating: 4.5 },
+  { id: "l5", name: "Mangalnath Temple", nameHi: "मंगलनाथ मंदिर", type: "temple", lat: 23.2132, lng: 75.7811, sector: "B1", description: "Birthplace of Mars, famous for Bhat Puja", descriptionHi: "मंगल देव का जन्मस्थान, भात पूजा के लिए प्रसिद्ध", isOpen: true, rating: 4.6 },
+  { id: "l6", name: "Kal Bhairav Temple", nameHi: "काल भैरव मंदिर", type: "temple", lat: 23.2100, lng: 75.7725, sector: "B1", description: "Ancient temple of Lord Kal Bhairav", descriptionHi: "भगवान काल भैरव का प्राचीन मंदिर", isOpen: true, rating: 4.7 },
   { id: "l7", name: "Alopi Devi Mandir", nameHi: "अलोपी देवी मंदिर", type: "temple", lat: 25.4320, lng: 81.8780, sector: "A2", description: "One of the Shakti Peethas", descriptionHi: "शक्ति पीठों में से एक", isOpen: true, rating: 4.6 },
   { id: "l8", name: "Mankameshwar Mandir", nameHi: "मनकामेश्वर मंदिर", type: "temple", lat: 25.4340, lng: 81.8830, sector: "A2", description: "Ancient Shiva temple", descriptionHi: "प्राचीन शिव मंदिर", isOpen: true, rating: 4.4 },
 

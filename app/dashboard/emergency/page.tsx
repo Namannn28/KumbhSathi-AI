@@ -50,7 +50,7 @@ export default function EmergencyPage() {
 
         <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full">
           <MapPin size={16} />
-          Current Location: <strong className="text-gray-900 dark:text-white">Sector A1, Near Sangam Ghat</strong>
+          Current Location: <strong className="text-gray-900 dark:text-white">Sector A1, Near Ram Ghat</strong>
         </div>
       </div>
 

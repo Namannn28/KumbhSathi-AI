@@ -23,11 +23,25 @@ export async function POST(req: Request) {
 
       if (response.ok) {
         const data = await response.json();
-        return NextResponse.json({
-          status: "success",
-          source: "RapidAPI",
-          trains: data
-        });
+        
+        // If the API returns an error message instead of an array (common with RapidAPI)
+        // or if data.data is the actual array, handle it securely to prevent frontend crashes
+        let actualTrainsArray = null;
+        if (Array.isArray(data)) {
+          actualTrainsArray = data;
+        } else if (data && Array.isArray(data.data)) {
+          actualTrainsArray = data.data;
+        }
+
+        if (actualTrainsArray) {
+          return NextResponse.json({
+            status: "success",
+            source: "RapidAPI",
+            trains: actualTrainsArray
+          });
+        } else {
+          throw new Error("RapidAPI returned a non-array response: " + JSON.stringify(data));
+        }
       }
     } catch (e) {
       console.error("RapidAPI fetch failed, falling back to mock", e);

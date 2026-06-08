@@ -10,7 +10,7 @@ export default function LostFoundPage() {
   const [reportSuccess, setReportSuccess] = useState(false);
 
   const [cases, setCases] = useState([
-    { id: "LF-101", name: "Ramesh Kumar", age: 65, gender: "Male", location: "Sector A1, near Sangam", time: "2 hours ago", status: "searching", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop" },
+    { id: "LF-101", name: "Ramesh Kumar", age: 65, gender: "Male", location: "Sector A1, near Ram Ghat", time: "2 hours ago", status: "searching", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop" },
     { id: "LF-102", name: "Aarohi (Child)", age: 8, gender: "Female", location: "Gate 3 Entrance", time: "30 mins ago", status: "searching", image: "https://images.unsplash.com/photo-1514315384763-ba401779410f?w=200&h=200&fit=crop" },
     { id: "LF-103", name: "Sunita Devi", age: 58, gender: "Female", location: "Sector B1, Tent City", time: "4 hours ago", status: "found", location_now: "Central Police Station" },
     { id: "LF-104", name: "Blue Backpack", age: null, gender: "Item", location: "Annapurna Langar", time: "1 hour ago", status: "searching", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop" },
@@ -230,7 +230,7 @@ export default function LostFoundPage() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Seen Location *</label>
                   <select name="location" required className="input-field">
                     <option value="">Select sector or area...</option>
-                    <option value="Sector A1 - Sangam Zone">Sector A1 - Sangam Zone</option>
+                    <option value="Sector A1 - Ram Ghat Zone">Sector A1 - Ram Ghat Zone</option>
                     <option value="Sector A2 - Dashashwamedh Area">Sector A2 - Dashashwamedh Area</option>
                     <option value="Sector B1 - Arail">Sector B1 - Arail</option>
                     <option value="Sector C1 - Parking & Gates">Sector C1 - Parking & Gates</option>

@@ -73,12 +73,20 @@ export default function ServicesPage() {
                     <p className="text-xs text-gray-500 font-hindi mb-3">{loc.nameHi}</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">{loc.description}</p>
                     <div className="flex gap-2">
-                      <button className="flex-1 btn-secondary py-2 text-xs flex items-center justify-center gap-1">
+                      <a 
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 btn-secondary py-2 text-xs flex items-center justify-center gap-1"
+                      >
                         <MapPin size={14} /> Navigate
-                      </button>
-                      <button className="flex-1 btn-secondary py-2 text-xs flex items-center justify-center gap-1">
+                      </a>
+                      <a 
+                        href={`tel:+919876543210`}
+                        className="flex-1 btn-secondary py-2 text-xs flex items-center justify-center gap-1"
+                      >
                         <Phone size={14} /> Call
-                      </button>
+                      </a>
                     </div>
                   </div>
                 ))}

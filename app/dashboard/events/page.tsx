@@ -129,9 +129,14 @@ export default function EventsPage() {
                   </div>
                 </div>
 
-                <button className="hidden md:block px-4 py-2 text-sacred-600 dark:text-sacred-400 font-medium bg-sacred-50 dark:bg-sacred-900/20 rounded-lg hover:bg-sacred-100 dark:hover:bg-sacred-900/40 transition-colors text-sm">
+                <a 
+                  href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.name)}&dates=${event.date.replace(/-/g, '')}/${event.date.replace(/-/g, '')}&details=${encodeURIComponent(event.significance)}&location=${encodeURIComponent(event.location)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden md:block px-4 py-2 text-sacred-600 dark:text-sacred-400 font-medium bg-sacred-50 dark:bg-sacred-900/20 rounded-lg hover:bg-sacred-100 dark:hover:bg-sacred-900/40 transition-colors text-sm text-center"
+                >
                   Add to Calendar
-                </button>
+                </a>
               </div>
             ))}
           </div>
