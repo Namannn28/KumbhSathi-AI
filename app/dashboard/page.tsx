@@ -28,13 +28,14 @@ export default function DashboardHome() {
       .then(res => res.json())
       .then(data => {
         if (data?.current_weather) {
-          setLiveWeather({
+          setLiveWeather(prev => ({
+            ...prev,
             temperature: Math.round(data.current_weather.temperature),
             condition: data.current_weather.weathercode <= 3 ? "Clear" : "Rain/Showers",
             icon: data.current_weather.weathercode <= 3 ? "☀️" : "🌧️",
-            aqi: 45, // Hardcoded for demo as Open-Meteo free tier doesn't include AQI
+            aqi: 45, // Hardcoded for demo
             humidity: 60 // Hardcoded for demo
-          });
+          }));
         }
       })
       .catch(console.error);
