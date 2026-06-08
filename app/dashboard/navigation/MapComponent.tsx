@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
 
 export default function MapComponent({ filteredLocations }: { filteredLocations: any[] }) {
+  const mapRef = useRef<any>(null);
+
   useEffect(() => {
     // Fix for Leaflet marker icons in Next.js
     if (typeof window !== 'undefined') {
@@ -17,22 +19,21 @@ export default function MapComponent({ filteredLocations }: { filteredLocations:
       });
     }
 
-    // Ultimate cleanup for React Strict Mode "Map container is already initialized" error
+    // Cleanup Leaflet map on unmount to avoid 'Map container is already initialized' error
     return () => {
-      const container = document.getElementById('map-container') as any;
-      if (container && container._leaflet_id) {
-        container._leaflet_id = null;
+      if (mapRef.current) {
+        mapRef.current.remove();
       }
     };
   }, []);
 
   return (
     <MapContainer 
-      id="map-container"
       center={[23.1765, 75.7885]} 
       zoom={14} 
       className="w-full h-full z-10"
       zoomControl={false}
+      ref={mapRef}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
