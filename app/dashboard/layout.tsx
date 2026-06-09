@@ -99,6 +99,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className={`
         fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800
         transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static
+        pt-16 md:pt-0
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
         <div className="h-full flex flex-col">
@@ -208,7 +209,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         {/* Mobile Bottom Nav */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-40 pb-safe">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-30 pb-safe">
           <div className="flex justify-around p-2">
             {[
               { name: "Home", href: "/dashboard", icon: Home },
