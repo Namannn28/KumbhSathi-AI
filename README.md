@@ -9,8 +9,6 @@
 
 ## 🌟 Overview
 
-Build by Naman
-
 Serve 50M+ pilgrims with AI-powered guidance across 13 languages. Real-time emergency support, crowd intelligence, lost & found, and community connection—all offline-capable.
 
 **Key Stats**: 500K concurrent users | 50+ APIs | 87% crowd prediction accuracy | 99.95% uptime
