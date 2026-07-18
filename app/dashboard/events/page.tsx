@@ -52,7 +52,7 @@ export default function EventsPage() {
                 <div className="relative z-10 h-full flex flex-col">
                   <div className="flex justify-between items-start mb-4">
                     <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg">
-                      <p className="text-sm font-bold">{new Date(snan.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                      <p className="text-sm font-bold" suppressHydrationWarning>{new Date(snan.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
                     </div>
                     {daysLeft > 0 && (
                       <div className="text-right">
@@ -111,7 +111,7 @@ export default function EventsPage() {
               <div key={event.id} className="p-4 md:p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-center">
                 <div className="bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 min-w-[100px] text-center p-3 rounded-xl border border-orange-100 dark:border-orange-800/50">
                   <p className="text-2xl font-bold">{new Date(event.date).getDate()}</p>
-                  <p className="text-xs uppercase font-medium">{new Date(event.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
+                  <p className="text-xs uppercase font-medium" suppressHydrationWarning>{new Date(event.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
                 </div>
                 
                 <div className="flex-1">

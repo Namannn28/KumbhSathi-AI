@@ -93,7 +93,7 @@ export default function NewsPage() {
                 
                 <div className="flex items-center gap-2 text-xs text-gray-500 mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
                   <Clock size={14} />
-                  <span>{new Date(article.pubDate).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                  <span suppressHydrationWarning>{new Date(article.pubDate).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                 </div>
               </motion.a>
             </Tilt>

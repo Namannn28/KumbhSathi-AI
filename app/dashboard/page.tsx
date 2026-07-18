@@ -188,7 +188,9 @@ export default function DashboardHome() {
               {majorEvents[0] && (
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{majorEvents[0].name}</h3>
-                  <p className="text-sm text-gray-500 mb-3">{new Date(majorEvents[0].date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                  <p className="text-sm text-gray-500 mb-3" suppressHydrationWarning>
+                    {new Date(majorEvents[0].date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{majorEvents[0].significance}</p>
                 </div>
               )}

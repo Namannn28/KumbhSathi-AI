@@ -13,14 +13,30 @@ interface Message {
 }
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      text: chatResponses.hello,
-      isBot: true,
-      timestamp: new Date()
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const saved = localStorage.getItem("kumbhsaarthi_chat");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Convert string dates back to Date objects
+        setMessages(parsed.map((msg: any) => ({...msg, timestamp: new Date(msg.timestamp)})));
+      } catch (e) {
+        setMessages([{ id: "welcome", text: chatResponses.hello, isBot: true, timestamp: new Date() }]);
+      }
+    } else {
+      setMessages([{ id: "welcome", text: chatResponses.hello, isBot: true, timestamp: new Date() }]);
     }
-  ]);
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem("kumbhsaarthi_chat", JSON.stringify(messages));
+    }
+  }, [messages]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -148,7 +164,7 @@ export default function ChatPage() {
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center">
         <div className="w-full max-w-4xl space-y-6 flex flex-col">
-          {messages.map((msg) => (
+          {isClient && messages.map((msg) => (
             <motion.div
               key={msg.id}
               initial={{ opacity: 0, y: 10 }}
