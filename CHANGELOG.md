@@ -15,3 +15,4 @@
 - 2026-07-18T17:54:06.914Z: Enhance Crowd Monitor: Update tooltips styling
 - 2026-07-18T17:54:07.036Z: Enhance Emergency SOS: Integrate Geolocation API
 - 2026-07-18T17:54:07.160Z: Enhance Emergency SOS: Add fallback coordinate handling
+- 2026-07-18T17:54:07.275Z: Enhance Emergency SOS: Setup one-tap tel links
