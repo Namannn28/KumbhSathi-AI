@@ -24,3 +24,4 @@
 - 2026-07-18T17:54:08.018Z: Enhance Events: Setup event filtering logic
 - 2026-07-18T17:54:08.138Z: Enhance Events: Add 'Add to Google Calendar' links
 - 2026-07-18T17:54:08.265Z: Enhance Events: Update event card UI
+- 2026-07-18T17:54:08.382Z: Enhance Events: Add Snan dates categories
