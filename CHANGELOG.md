@@ -49,3 +49,4 @@
 - 2026-07-18T17:54:11.188Z: UI/UX: Improve dark mode color contrast
 - 2026-07-18T17:54:11.309Z: UI/UX: Add Framer Motion page transitions
 - 2026-07-18T17:54:11.437Z: UI/UX: Fix mobile bottom nav padding
+- 2026-07-18T17:54:11.562Z: Docs: Update README with new feature list
